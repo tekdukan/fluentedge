@@ -315,193 +315,199 @@
   </div>
 
 <script>
-/* Student Info */
-const STUDENT = "Muhammad Alp";
-
-/* Enhanced Quiz Data - 20 questions with variety */
 const quiz = [
-  // 1: Very easy - Basic introduction
+  // 1: Verb to be – full sentence
   {
-    id:1, type:"mcq", diff:"Very easy", topic:"Introductions",
-    q:"I ___ a student.",
+    id:1, type:"mcq", diff:"Easy", topic:"Introductions",
+    q:"I ___ from Turkey.",
     options:["am","is","are","be"],
     answer:"am",
-    hint:"Use 'am' with 'I' (Ben)",
-    explain:"Correct: 'I am a student.' (Ben bir öğrenciyim.)"
+    hint:"Use 'am' with I",
+    explain:"Correct: I am from Turkey."
   },
 
-  // 2: Emoji vocabulary - Food
+  // 2: Food + sentence meaning
   {
     id:2, type:"mcq", diff:"Easy", topic:"Food Vocabulary",
-    q:"What is this? 🍎",
-    options:["banana","orange","apple","grapes"],
-    answer:"apple",
-    hint:"It's red and crunchy. (Kırmızı ve çıtır)",
-    explain:"🍎 is an apple (elma)."
+    q:"Which sentence is correct for 🍎?",
+    options:[
+      "It is an apple.",
+      "It are an apple.",
+      "It am apple.",
+      "It be apple."
+    ],
+    answer:"It is an apple.",
+    hint:"Use 'is' with it",
+    explain:"Correct sentence: It is an apple."
   },
 
-  // 3: Verb to be - Basic sentence
+  // 3: Verb to be – negative
   {
     id:3, type:"input", diff:"Easy", topic:"Verb to be",
-    q:"Fill the blank: My brother ___ 10 years old.",
+    q:"Fill the blank: She ___ not happy today.",
     answer:"is",
-    hint:"We use 'is' with he/she/it. (O için 'is' kullanırız)",
-    explain:"Correct: 'My brother is 10 years old.' (Erkek kardeşim 10 yaşında.)"
+    hint:"is mi are mi?",
+    explain:"Correct: She is not happy today."
   },
 
-  // 4: Listening practice
+  // 4: Listening – meaning
   {
     id:4, type:"listen", diff:"Easy", topic:"Greetings",
-    q:"Listen and choose what you hear:",
-    audioText:"Good morning Alp, how are you today?",
+    q:"Listen and choose the correct meaning:",
+    audioText:"Hello, my name is Alp.",
     options:[
-      "Good night Alp, sleep well.",
-      "Good morning Alp, how are you today?",
-      "Goodbye Alp, see you tomorrow.",
-      "Hello Alp, nice to meet you."
+      "He says goodbye. (Veda ediyor.)",
+      "He tells his name. (Adını söylüyor.)",
+      "He asks a question. (soru soruyor)",
+      "He talks about his family. (ailesi hakkında konuşuyor.)"
     ],
-    answer:"Good morning Alp, how are you today?",
-    hint:"Starts with 'Good morning'",
-    explain:"The sentence says 'Good morning Alp, how are you today?' (Günaydın Alp, bugün nasılsın?)"
+    answer:"He tells his name. (Adını söylüyor.)",
+    hint:"ne hakkında konuşuyor",
+    explain:"The speaker says his name."
   },
 
-  // 5: True/False - Colors
+  // 5: True / False – general fact
   {
-    id:5, type:"tf", diff:"Easy", topic:"Colors",
-    q:"The sky is green. True or False?",
-    answer:false,
-    hint:"Gökyüzü hangi renk? (What color is the sky?)",
-    explain:"The sky is blue, not green. (Gökyüzü mavi, yeşil değil.)"
+    id:5, type:"tf", diff:"Easy", topic:"Daily life",
+    q:"We eat breakfast in the morning. True or False?",
+    answer:true,
+    hint:"Think about daily routine",
+    explain:"True. Breakfast is in the morning."
   },
 
-  // 6: Sentence ordering
+  // 6: Scramble – longer sentence
   {
     id:6, type:"scramble", diff:"Medium", topic:"Sentence order",
-    q:"Order the words to make a sentence:",
-    words:["I","like","pizza"],
-    answer:"I like pizza",
-    hint:"Start with 'I'",
-    explain:"Correct order: 'I like pizza' (Pizzayı severim.)"
+    q:"Order the words:",
+    words:["I","like","to","play","football"],
+    answer:"I like to play football",
+    hint:"Start with I",
+    explain:"Correct: I like to play football."
   },
 
-  // 7: Numbers - Basic counting
+  // 7: Numbers – simple math
   {
-    id:7, type:"mcq", diff:"Easy", topic:"Numbers",
-    q:"How many fingers on two hands?",
-    options:["5","8","10","12"],
+    id:7, type:"mcq", diff:"Medium", topic:"Numbers",
+    q:"What is six plus 4?",
+    options:["8","9","10","12"],
     answer:"10",
-    hint:"Bir elde 5 parmak (5 fingers on one hand)",
-    explain:"Two hands have 10 fingers. (İki el 10 parmak.)"
+    hint:"Add the numbers",
+    explain:"6 + 4 = 10."
   },
 
-  // 8: Prepositions - Basic location
+  // 8: Prepositions – picture logic
   {
     id:8, type:"mcq", diff:"Medium", topic:"Prepositions",
-    q:"The cat is sleeping ___ the chair.",
-    options:["in","on","under","next to"],
+    q:"The book is ___ the table.",
+    options:["in","on","under","behind"],
     answer:"on",
-    hint:"Sandalyenin üzerinde (On top of the chair)",
-    explain:"'On' means üzerinde. The cat is on the chair."
+    hint:"The book is on top",
+    explain:"Correct: on the table."
   },
 
-  // 9: Plurals - Basic noun
+  // 9: Plural with number
   {
     id:9, type:"input", diff:"Medium", topic:"Plurals",
-    q:"Write the plural of 'book':",
-    answer:"books",
-    hint:"Add 's' to make plural (Çoğul yapmak için 's' ekle)",
-    explain:"Book → books (kitap → kitaplar)"
+    q:"There are two ___. (box)",
+    answer:"boxes",
+    hint:"Box → boxes",
+    explain:"Correct: two boxes."
   },
 
-
-  // 11: Family members
+  // 11: Family – possessive
   {
-    id:11, type:"mcq", diff:"Easy", topic:"Family",
-    q:"My father's brother is my ___.",
-    options:["aunt","grandmother","uncle","brother"],
-    answer:"uncle",
-    hint:"Babanın kardeşi kim?",
-    explain:"My father's brother is my uncle. (Babamın kardeşi benim amcam.)"
+    id:11, type:"mcq", diff:"Medium", topic:"Family",
+    q:"My ___ name is Ali. (father)",
+    options:[
+      "father",
+      "father’s",
+      "fathers",
+      "fathers’"
+    ],
+    answer:"father’s",
+    hint:"Use possessive",
+    explain:"Correct: My father’s name is Ali."
   },
 
-  // 12: Daily routine
+  // 12: Daily routine – time word
   {
     id:12, type:"scramble", diff:"Medium", topic:"Daily routine",
     q:"Order the words:",
-    words:["I","breakfast","eat","morning","the","in"],
-    answer:"I eat breakfast in the morning",
-    hint:"Start with 'I' and think about daily routine",
-    explain:"Correct: 'I eat breakfast in the morning' (Sabah kahvaltı yaparım.)"
+    words:["I","go","school","to","every","day"],
+    answer:"I go to school every day",
+    hint:"Think of daily routine",
+    explain:"Correct sentence formed."
   },
 
-  // 13: School objects
+  // 13: School – use sentence
   {
     id:13, type:"mcq", diff:"Easy", topic:"School",
-    q:"We write with a ___.",
-    options:["book","pencil","ruler","bag"],
+    q:"Which one is in a pencil bag?",
+    options:["chair","pencil","desk","board"],
     answer:"pencil",
-    hint:"Ne ile yazı yazarız?",
-    explain:"We write with a pencil. (Kalemle yazarız.)"
+    hint:"You write with it",
+    explain:"A pencil is in a pencil case."
   },
 
-  // 14: Simple present tense
+  // 14: Present simple – negative
   {
     id:14, type:"input", diff:"Medium", topic:"Present tense",
-    q:"He ___ (play) football every Saturday.",
-    answer:"plays",
-    hint:"He/she/it için 's' ekleriz",
-    explain:"He plays football. (O her cumartesi futbol oynar.)"
+    q:"He ___ like milk.",
+    answer:"doesn't",
+    hint:"doesn't or can't",
+    explain:"Correct: He doesn't like milk."
   },
 
-  // 16: Weather
+  // 16: Weather – sentence choice
   {
-    id:16, type:"mcq", diff:"Easy", topic:"Weather",
-    q:"When it rains, we need an ___.",
-    options:["umbrella","ice cream","sunglasses","hat"],
-    answer:"umbrella",
-    hint:"Yağmur yağdığında ne kullanırız?",
-    explain:"We need an umbrella when it rains. (Yağmur yağdığında şemsiye kullanırız.)"
+    id:16, type:"mcq", diff:"Medium", topic:"Weather",
+    q:"It is cold today. What do you wear?",
+    options:["T-shirt","jacket","shorts","sandals"],
+    answer:"jacket",
+    hint:"Cold weather",
+    explain:"We wear a jacket when it is cold."
   },
 
-  // 17: Time - Basic
+  // 17: Time – clock understanding
   {
     id:17, type:"mcq", diff:"Medium", topic:"Time",
-    q:"We sleep at ___.",
-    options:["morning","afternoon","night","evening"],
-    answer:"night",
-    hint:"Gece ne yaparız?",
-    explain:"We sleep at night. (Gece uyuruz.)"
+    q:"School starts at 8:00. Is it morning or afternoon?",
+    options:["morning","afternoon","evening","night"],
+    answer:"morning",
+    hint:"8:00 is early",
+    explain:"8:00 is in the morning."
   },
 
-  // 18: Can for ability
+  // 18: Can – negative ability
   {
     id:18, type:"input", diff:"Medium", topic:"Can / Ability",
-    q:"Birds ___ fly.",
-    answer:"can",
-    hint:"Kuşlar ne yapabilir? (Yetenek bildirirken 'can' kullanırız)",
-    explain:"Birds can fly. (Kuşlar uçabilir.)"
+    q:"Fish ___ fly.",
+    answer:"can't",
+    hint:"can or can't",
+    explain:"Correct: Fish can't fly."
   },
 
-  // 19: Food vocabulary
+  // 19: Food – sentence logic
   {
-    id:19, type:"mcq", diff:"Easy", topic:"Food",
-    q:"We drink ___ when we are thirsty.",
-    options:["bread","water","rice","chicken"],
-    answer:"water",
-    hint:"Susadığımızda ne içeriz?",
-    explain:"We drink water when thirsty. (Susadığımızda su içeriz.)"
+    id:19, type:"mcq", diff:"Medium", topic:"Food",
+    q:"We eat soup with a ___.",
+    options:["knife","fork","spoon","plate"],
+    answer:"spoon",
+    hint:"Think about soup",
+    explain:"We eat soup with a spoon."
   },
 
-  // 20: Final challenge - Mixed
+  // 20: Question form – verb to be
   {
-    id:20, type:"scramble", diff:"Challenge", topic:"Mixed",
+    id:20, type:"scramble", diff:"Challenge", topic:"Questions",
     q:"Make a question:",
-    words:["your","name","is","What"],
-    answer:"What is your name",
-    hint:"Soru sormak için 'What' ile başla",
-    explain:"Correct: 'What is your name' (Adın ne)"
+    words:["Where","you","are","from"],
+    answer:"Where are you from",
+    hint:"Question with 'Where'",
+    explain:"Correct question formed."
   }
 ];
+
 
 /* State Management */
 let current = 0;
@@ -976,7 +982,7 @@ function getTurkishTranslation(q){
     "We drink ___ when we are thirsty.": "Susadığımızda ___ içeriz."
   };
   
-  return translations[q.q] || "(Türkçe çeviri)";
+ 
 }
 
 /* Restart Quiz */
@@ -1116,5 +1122,4 @@ checkAnswer = function(){
 </script>
 </body>
 </html>
-
 
