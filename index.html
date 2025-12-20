@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<title>Alp — A1 English Quiz (10 questions)</title>
+<title>Alp — A1 English Quiz (20 questions)</title>
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <style>
   :root{
@@ -10,33 +10,39 @@
     --card:#ffffff;
     --accent:#3b64ff;
     --accent-2:#6a86ff;
+    --accent-light:#eef4ff;
     --muted:#6b7480;
     --good:#16a34a;
     --bad:#ef4444;
+    --warning:#f59e0b;
     --glass: rgba(255,255,255,0.7);
     --radius:14px;
+    --shadow:0 8px 30px rgba(20,30,80,0.08);
+    --shadow-hover:0 12px 40px rgba(59,100,255,0.12);
   }
-  *{box-sizing:border-box}
+  *{box-sizing:border-box; margin:0; padding:0}
   body{
-    margin:0;
-    font-family: Inter, system-ui, Arial, sans-serif;
+    font-family: 'Inter', system-ui, -apple-system, Arial, sans-serif;
     background: linear-gradient(180deg,#eef2ff 0%, #f9fbff 100%);
     color:#222;
     padding:28px;
     display:flex;
     justify-content:center;
+    min-height:100vh;
   }
   .wrap{
     width:100%;
     max-width:880px;
   }
 
+  /* Header */
   header{
     display:flex;
     align-items:center;
     justify-content:space-between;
     gap:12px;
     margin-bottom:18px;
+    flex-wrap:wrap;
   }
   .title{
     display:flex;
@@ -44,76 +50,204 @@
     align-items:center;
   }
   .avatar{
-    width:64px;height:64px;border-radius:12px;
+    width:72px;height:72px;border-radius:16px;
     background:linear-gradient(135deg,var(--accent),var(--accent-2));
-    display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:20px;
+    display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:24px;
     box-shadow:0 6px 18px rgba(59,100,255,0.18);
+    border:3px solid white;
   }
-  h1{margin:0;font-size:20px}
-  p.lead{margin:0;color:var(--muted);font-size:14px}
+  h1{margin:0;font-size:24px;color:#1e293b}
+  .greeting{font-size:16px;color:var(--accent);font-weight:600;margin:4px 0}
+  p.lead{margin:0;color:var(--muted);font-size:15px}
 
   .status{
     text-align:right;
+    padding:8px 16px;
+    background:white;
+    border-radius:12px;
+    box-shadow:var(--shadow);
   }
-  .progress-wrap{background:#e9eefc;border-radius:999px;height:12px;overflow:hidden;margin-top:8px}
-  .progress-bar{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2));width:0%}
+  .score-display{font-size:18px;font-weight:700;color:var(--accent);display:flex;gap:6px;align-items:center}
+  .progress-wrap{background:#e9eefc;border-radius:999px;height:12px;overflow:hidden;margin-top:8px;width:180px}
+  .progress-bar{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2));width:0%;transition:width 0.3s ease}
+  
+  /* Main card */
   .card{
     background:var(--card);
     border-radius:var(--radius);
-    padding:20px;
-    box-shadow:0 8px 30px rgba(20,30,80,0.06);
-    margin-bottom:16px;
+    padding:28px;
+    box-shadow:var(--shadow);
+    margin-bottom:20px;
+    transition:box-shadow 0.3s ease, transform 0.3s ease;
   }
+  .card:hover{box-shadow:var(--shadow-hover);transform:translateY(-2px)}
 
   .meta{
     display:flex;
     justify-content:space-between;
     align-items:center;
     gap:10px;
-    margin-bottom:12px;
+    margin-bottom:16px;
   }
   .difficulty{
-    font-size:13px;color:var(--muted);background:#f3f6ff;padding:6px 10px;border-radius:999px;
+    font-size:13px;color:white;background:var(--accent);padding:6px 14px;border-radius:999px;font-weight:600;
   }
+  .topic{font-size:13px;color:var(--muted);background:var(--accent-light);padding:6px 12px;border-radius:999px;}
 
-  .question-text{font-size:20px;margin:6px 0 14px}
-  .hint{font-size:13px;color:var(--muted);margin-bottom:8px}
-  .options{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+  /* Question content */
+  .question-text{
+    font-size:24px;margin:10px 0 20px;
+    line-height:1.4;
+  }
+  .hint{
+    font-size:14px;color:var(--muted);
+    margin:12px 0;padding:12px;background:var(--accent-light);
+    border-radius:10px;border-left:4px solid var(--accent);
+    display:none;
+  }
+  .hint.visible{display:block;}
+  
+  /* Options */
+  .options{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+    gap:12px;
+    margin:20px 0;
+  }
   button.opt{
-    padding:12px;border-radius:10px;border:0;background:#f3f6ff;cursor:pointer;font-size:15px;
-    box-shadow:inset 0 -2px 0 rgba(0,0,0,0.03);
+    padding:16px;border-radius:12px;border:2px solid #e8eefc;
+    background:white;cursor:pointer;font-size:16px;font-weight:500;
+    transition:all 0.2s ease;text-align:left;
+    box-shadow:0 2px 4px rgba(0,0,0,0.02);
   }
-  button.opt.selected{outline:3px solid rgba(59,100,255,0.12);background:linear-gradient(180deg,#fff,#f0f5ff)}
-  .controls{display:flex;gap:8px;align-items:center;justify-content:flex-end;margin-top:14px}
+  button.opt:hover{
+    border-color:var(--accent);
+    background:#f8faff;
+    transform:translateY(-2px);
+    box-shadow:0 4px 8px rgba(59,100,255,0.08);
+  }
+  button.opt.selected{
+    border-color:var(--accent);
+    background:linear-gradient(180deg,#f0f5ff,#e6eeff);
+    color:var(--accent);
+    box-shadow:0 4px 12px rgba(59,100,255,0.12);
+  }
+  
+  /* Controls */
+  .controls{
+    display:flex;
+    gap:12px;
+    align-items:center;
+    justify-content:flex-end;
+    margin-top:24px;
+  }
   .btn{
-    border:0;padding:10px 14px;border-radius:10px;background:var(--accent);color:white;cursor:pointer;font-weight:600;
+    border:0;padding:12px 20px;border-radius:10px;background:var(--accent);
+    color:white;cursor:pointer;font-weight:600;font-size:15px;
+    transition:all 0.2s ease;display:flex;align-items:center;gap:6px;
+    box-shadow:0 4px 8px rgba(59,100,255,0.15);
   }
-  .btn.secondary{background:white;color:var(--accent);border:1px solid #dfe9ff}
-  .feedback{margin-top:12px;font-size:16px}
-  .feedback.good{color:var(--good)}
-  .feedback.bad{color:var(--bad)}
-  .small{font-size:13px;color:var(--muted)}
-
-  /* matching / drag */
-  .match-grid{display:flex;gap:18px;flex-wrap:wrap}
-  .match-col{flex:1;min-width:200px;padding:10px;border-radius:10px;background:#fbfdff}
+  .btn:hover{
+    background:var(--accent-2);
+    transform:translateY(-2px);
+    box-shadow:0 6px 12px rgba(59,100,255,0.2);
+  }
+  .btn.secondary{
+    background:white;color:var(--accent);border:2px solid #dfe9ff;
+    box-shadow:0 2px 4px rgba(0,0,0,0.05);
+  }
+  .btn.secondary:hover{
+    background:#f8faff;
+    border-color:var(--accent);
+  }
+  
+  /* Feedback */
+  .feedback{
+    margin-top:16px;
+    font-size:16px;
+    padding:16px;
+    border-radius:10px;
+    animation:fadeIn 0.5s ease;
+  }
+  @keyframes fadeIn{
+    from{opacity:0; transform:translateY(10px)}
+    to{opacity:1; transform:translateY(0)}
+  }
+  .feedback.good{background:#f0fdf4;color:var(--good);border-left:4px solid var(--good)}
+  .feedback.bad{background:#fef2f2;color:var(--bad);border-left:4px solid var(--bad)}
+  .feedback.warning{background:#fffbeb;color:var(--warning);border-left:4px solid var(--warning)}
+  
+  /* Special question types */
+  .input-answer{
+    width:100%;padding:16px;border-radius:12px;border:2px solid #e8eefc;
+    font-size:16px;margin:12px 0;transition:border-color 0.2s;
+  }
+  .input-answer:focus{
+    outline:none;border-color:var(--accent);
+    box-shadow:0 0 0 3px rgba(59,100,255,0.1);
+  }
+  
+  .match-grid{display:flex;gap:24px;flex-wrap:wrap;margin:20px 0}
+  .match-col{flex:1;min-width:220px;padding:16px;border-radius:12px;background:#fbfdff;border:2px dashed #e6eefc}
   .draggable{
-    padding:10px;border-radius:8px;background:white;margin:8px 0;border:1px dashed #e6eefc;cursor:grab;
+    padding:12px 16px;border-radius:10px;background:white;margin:10px 0;
+    border:2px solid #e8eefc;cursor:grab;font-weight:500;
+    transition:all 0.2s ease;
   }
-  .drop-target{min-height:44px;border-radius:8px;padding:8px;background:#eef4ff;border:2px dashed transparent}
-  .drop-target.active{border-color:rgba(59,100,255,0.28);background:#f7f9ff}
-
-  /* scramble */
-  .scramble-area{display:flex;gap:10px;flex-wrap:wrap}
-  .word-chip{padding:10px 12px;border-radius:999px;background:#f3f6ff;cursor:pointer}
-
-  footer{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px}
-  .score{font-weight:700;color:var(--accent)}
-  .review-list{margin-top:12px}
-  .review-item{padding:10px;border-radius:8px;background:#fbfdff;margin-bottom:8px}
-
-  @media (max-width:640px){
-    .options{grid-template-columns:repeat(2,1fr)}
+  .draggable:hover{background:#f8faff;border-color:var(--accent);transform:translateY(-2px)}
+  .drop-target{
+    min-height:52px;border-radius:10px;padding:12px;background:#eef4ff;
+    border:2px dashed #c7d2fe;margin:10px 0;transition:all 0.2s;
+  }
+  .drop-target.active{
+    border-color:rgba(59,100,255,0.5);
+    background:#f0f4ff;
+    box-shadow:0 0 0 3px rgba(59,100,255,0.05);
+  }
+  
+  .scramble-area{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0}
+  .word-chip{
+    padding:12px 18px;border-radius:999px;background:var(--accent-light);
+    cursor:pointer;font-weight:500;transition:all 0.2s;border:2px solid transparent;
+  }
+  .word-chip:hover{
+    background:white;border-color:var(--accent);
+    transform:translateY(-2px);
+    box-shadow:0 4px 8px rgba(59,100,255,0.1);
+  }
+  
+  /* Review section */
+  .review-list{margin-top:20px}
+  .review-item{
+    padding:16px;border-radius:12px;background:#fbfdff;margin-bottom:12px;
+    border-left:4px solid #e8eefc;transition:all 0.2s;
+  }
+  .review-item.correct{border-left-color:var(--good)}
+  .review-item.incorrect{border-left-color:var(--bad)}
+  
+  /* Footer */
+  footer{
+    display:flex;justify-content:space-between;align-items:center;
+    gap:10px;margin-top:20px;padding:16px;background:white;
+    border-radius:12px;box-shadow:var(--shadow);
+  }
+  .badge{
+    font-weight:700;color:var(--accent);padding:8px 16px;
+    background:var(--accent-light);border-radius:999px;
+    display:flex;align-items:center;gap:6px;
+  }
+  .encouragement{font-size:14px;color:var(--muted);font-style:italic}
+  
+  /* Mobile */
+  @media (max-width:768px){
+    body{padding:16px}
+    .wrap{max-width:100%}
+    header{flex-direction:column;align-items:flex-start;gap:16px}
+    .status{width:100%}
+    .options{grid-template-columns:1fr}
+    .match-grid{flex-direction:column}
+    .question-text{font-size:20px}
+    .controls{flex-wrap:wrap;justify-content:center}
   }
 </style>
 </head>
@@ -123,13 +257,14 @@
       <div class="title">
         <div class="avatar" aria-hidden="true">MA</div>
         <div>
-          <h1>Hello Alp</h1>
-          <p class="lead"></p>
+          <h1>Hello Alp! 👋</h1>
+          <div class="greeting">Ready for English practice?</div>
+          <p class="lead">A1 Level - Turkish to English Quiz</p>
         </div>
       </div>
       <div class="status">
-        <div class="small">Score: <span id="score">0</span> / <span id="total">10</span></div>
-        <div class="progress-wrap" aria-hidden="true" style="width:220px">
+        <div class="score-display">Score: <span id="score">0</span> / <span id="total">20</span></div>
+        <div class="progress-wrap" aria-hidden="true">
           <div class="progress-bar" id="progressBar"></div>
         </div>
       </div>
@@ -137,7 +272,10 @@
 
     <main class="card" id="card">
       <div class="meta">
-        <div class="difficulty" id="difficulty">Easy</div>
+        <div>
+          <span class="difficulty" id="difficulty">Easy</span>
+          <span class="topic" id="topic">Greetings</span>
+        </div>
         <div class="small" id="qtype">Multiple choice</div>
       </div>
 
@@ -146,136 +284,260 @@
       </div>
 
       <div class="controls">
-        <button class="btn secondary" id="hintBtn">Show hint</button>
-        <button class="btn" id="checkBtn">Check answer</button>
-        <button class="btn" id="nextBtn" style="display:none">Next →</button>
+        <button class="btn secondary" id="hintBtn">
+          <span>💡</span> Hint
+        </button>
+        <button class="btn" id="checkBtn">
+          <span>✓</span> Check Answer
+        </button>
+        <button class="btn" id="nextBtn" style="display:none">
+          <span>→</span> Next
+        </button>
       </div>
 
       <div id="feedbackWrap"></div>
     </main>
 
     <div class="card" id="reviewCard" style="display:none">
-      <h3>Review & Results</h3>
-      <p class="small">You can see correct answers and explanations. Restart anytime.</p>
+      <h3>🎉 Great Job Alp! Results</h3>
+      <p class="lead">Here's how you did:</p>
       <div id="reviewList" class="review-list"></div>
-      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px">
-        <button class="btn secondary" id="restartBtn">Restart</button>
-        <button class="btn" id="finishBtn">Close</button>
+      <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:20px">
+        <button class="btn secondary" id="restartBtn">🔄 Restart</button>
+        <button class="btn" id="finishBtn">🏁 Finish</button>
       </div>
     </div>
 
     <footer>
-      <div class="small">Say the answers out loud</div>
-      <div class="score">Badge: <span id="badge">—</span></div>
+      <div class="encouragement" id="encouragement">Say the answers out loud!</div>
+      <div class="badge">Badge: <span id="badge">Starter ⭐</span></div>
     </footer>
   </div>
 
 <script>
-/* Student */
+/* Student Info */
 const STUDENT = "Muhammad Alp";
 
-/* Quiz data: 10 questions, different types */
+/* Enhanced Quiz Data - 20 questions with variety */
 const quiz = [
-  // 1: Multiple choice, very easy
+  // 1: Very easy - Basic introduction
   {
     id:1, type:"mcq", diff:"Very easy", topic:"Introductions",
     q:"I ___ a student.",
-    options:["am","is","are"],
+    options:["am","is","are","be"],
     answer:"am",
-    hint:"Use 'I' + ___",
-    explain:"We use 'am' with I: 'I am a student.'"
+    hint:"Use 'am' with 'I' (Ben)",
+    explain:"Correct: 'I am a student.' (Ben bir öğrenciyim.)"
   },
 
-  // 2: Emoji picture MCQ
+  // 2: Emoji vocabulary - Food
   {
-    id:2, type:"mcq", diff:"Easy", topic:"Vocabulary (Food)",
+    id:2, type:"mcq", diff:"Easy", topic:"Food Vocabulary",
     q:"What is this? 🍎",
-    options:["apple","banana","orange"],
+    options:["banana","orange","apple","grapes"],
     answer:"apple",
-    hint:"It's red and crunchy.",
-    explain:"This emoji is an apple — apple."
+    hint:"It's red and crunchy. (Kırmızı ve çıtır)",
+    explain:"🍎 is an apple (elma)."
   },
 
-  // 3: Fill-in-the-blank (text)
+  // 3: Verb to be - Basic sentence
   {
     id:3, type:"input", diff:"Easy", topic:"Verb to be",
-    q:"Fill the blank: Erbil ___ my friend.",
+    q:"Fill the blank: My brother ___ 10 years old.",
     answer:"is",
-    hint:"We use 'is' with he/she/it.",
-    explain:"Use 'is' for name: 'Erbil is my sister.'"
+    hint:"We use 'is' with he/she/it. (O için 'is' kullanırız)",
+    explain:"Correct: 'My brother is 10 years old.' (Erkek kardeşim 10 yaşında.)"
   },
 
-
-  // 4: Listening (play phrase; choose)
+  // 4: Listening practice
   {
-    id:4, type:"listen", diff:"Medium", topic:"Greetings (listening)",
-    q:"Listen and choose the sentence you hear.",
-    audioText:"Good morning Muhammed, how are you?",
-    options:["Good night, sleep well.","Good morning Muhammed, how are you?","See you soon!"],
-    answer:"Good morning Muhammed, how are you?",
-    hint:"Starts with 'Good morning'.",
-    explain:"The sentence says 'Good morning Muhammed, how are you?'"
+    id:4, type:"listen", diff:"Easy", topic:"Greetings",
+    q:"Listen and choose what you hear:",
+    audioText:"Good morning Alp, how are you today?",
+    options:[
+      "Good night Alp, sleep well.",
+      "Good morning Alp, how are you today?",
+      "Goodbye Alp, see you tomorrow.",
+      "Hello Alp, nice to meet you."
+    ],
+    answer:"Good morning Alp, how are you today?",
+    hint:"Starts with 'Good morning'",
+    explain:"The sentence says 'Good morning Alp, how are you today?' (Günaydın Alp, bugün nasılsın?)"
   },
 
-  // 5: True/False
+  // 5: True/False - Colors
   {
-    id:5, type:"tf", diff:"Easy", topic:"Vocabulary (Colours)",
+    id:5, type:"tf", diff:"Easy", topic:"Colors",
     q:"The sky is green. True or False?",
     answer:false,
-    hint:"Sky is blue.",
-    explain:"Sky is blue, so green is False."
+    hint:"Gökyüzü hangi renk? (What color is the sky?)",
+    explain:"The sky is blue, not green. (Gökyüzü mavi, yeşil değil.)"
   },
 
-  // 6: Scramble (reorder words to make sentence)
+  // 6: Sentence ordering
   {
     id:6, type:"scramble", diff:"Medium", topic:"Sentence order",
-    q:"Order the words to Make a sentence",
-    words:["bag","the","to", "glass", "pizza", "is", "a", "There", "next"],
-    answer:"There is a bag next to the glass",
-    hint:"Subject + verb + object",
-    explain:"Correct order: 'There is a bag next to the glass.'"
+    q:"Order the words to make a sentence:",
+    words:["I","like","pizza"],
+    answer:"I like pizza",
+    hint:"Start with 'I'",
+    explain:"Correct order: 'I like pizza' (Pizzayı severim.)"
   },
 
-  // 7: Number MCQ
+  // 7: Numbers - Basic counting
   {
-    id:6, type:"mcq", diff:"Very easy", topic:"Numbers",
-    q:"How many fingers on one hand?",
-    options:["3","5","8"],
-    answer:"5",
-    hint:"bir elde kaç parmak var?",
-    explain:"A human hand has 5 fingers."
+    id:7, type:"mcq", diff:"Easy", topic:"Numbers",
+    q:"How many fingers on two hands?",
+    options:["5","8","10","12"],
+    answer:"10",
+    hint:"Bir elde 5 parmak (5 fingers on one hand)",
+    explain:"Two hands have 10 fingers. (İki el 10 parmak.)"
   },
 
-  // 8: Prepositions (choose)
+  // 8: Prepositions - Basic location
   {
     id:8, type:"mcq", diff:"Medium", topic:"Prepositions",
-    q:"The cat is ___ the box.",
-    options:["in","on","under"],
-    answer:"in",
-    hint:"kutunun içinde.",
-    explain:"If the cat is inside the box we use 'in'."
+    q:"The cat is sleeping ___ the chair.",
+    options:["in","on","under","next to"],
+    answer:"on",
+    hint:"Sandalyenin üzerinde (On top of the chair)",
+    explain:"'On' means üzerinde. The cat is on the chair."
   },
 
-  //9: Short input / plural
+  // 9: Plurals - Basic noun
   {
-    id:9, type:"input", diff:"Medium", topic:"Plural nouns",
-    q:"Write the plural of 'book'.",
+    id:9, type:"input", diff:"Medium", topic:"Plurals",
+    q:"Write the plural of 'book':",
     answer:"books",
-    hint:"Add 's' for most nouns.",
-    explain:"Plural of book is 'books'."
+    hint:"Add 's' to make plural (Çoğul yapmak için 's' ekle)",
+    explain:"Book → books (kitap → kitaplar)"
+  },
+
+
+  // 11: Family members
+  {
+    id:11, type:"mcq", diff:"Easy", topic:"Family",
+    q:"My father's brother is my ___.",
+    options:["aunt","grandmother","uncle","brother"],
+    answer:"uncle",
+    hint:"Babanın kardeşi kim?",
+    explain:"My father's brother is my uncle. (Babamın kardeşi benim amcam.)"
+  },
+
+  // 12: Daily routine
+  {
+    id:12, type:"scramble", diff:"Medium", topic:"Daily routine",
+    q:"Order the words:",
+    words:["I","breakfast","eat","morning","the","in"],
+    answer:"I eat breakfast in the morning",
+    hint:"Start with 'I' and think about daily routine",
+    explain:"Correct: 'I eat breakfast in the morning' (Sabah kahvaltı yaparım.)"
+  },
+
+  // 13: School objects
+  {
+    id:13, type:"mcq", diff:"Easy", topic:"School",
+    q:"We write with a ___.",
+    options:["book","pencil","ruler","bag"],
+    answer:"pencil",
+    hint:"Ne ile yazı yazarız?",
+    explain:"We write with a pencil. (Kalemle yazarız.)"
+  },
+
+  // 14: Simple present tense
+  {
+    id:14, type:"input", diff:"Medium", topic:"Present tense",
+    q:"He ___ (play) football every Saturday.",
+    answer:"plays",
+    hint:"He/she/it için 's' ekleriz",
+    explain:"He plays football. (O her cumartesi futbol oynar.)"
+  },
+
+  // 15: Opposites matching
+  {
+    id:15, type:"match", diff:"Medium", topic:"Opposites",
+    q:"Match the opposites:",
+    pairs:[
+      {left:"big", right:"small"},
+      {left:"hot", right:"cold"},
+      {left:"happy", right:"sad"},
+      {left:"fast", right:"slow"}
+    ],
+    hint:"Zıt anlamlıları eşleştir",
+    explain:"big↔small, hot↔cold, happy↔sad, fast↔slow"
+  },
+
+  // 16: Weather
+  {
+    id:16, type:"mcq", diff:"Easy", topic:"Weather",
+    q:"When it rains, we need an ___.",
+    options:["umbrella","ice cream","sunglasses","hat"],
+    answer:"umbrella",
+    hint:"Yağmur yağdığında ne kullanırız?",
+    explain:"We need an umbrella when it rains. (Yağmur yağdığında şemsiye kullanırız.)"
+  },
+
+  // 17: Time - Basic
+  {
+    id:17, type:"mcq", diff:"Medium", topic:"Time",
+    q:"We sleep at ___.",
+    options:["morning","afternoon","night","evening"],
+    answer:"night",
+    hint:"Gece ne yaparız?",
+    explain:"We sleep at night. (Gece uyuruz.)"
+  },
+
+  // 18: Can for ability
+  {
+    id:18, type:"input", diff:"Medium", topic:"Can / Ability",
+    q:"Birds ___ fly.",
+    answer:"can",
+    hint:"Kuşlar ne yapabilir? (Yetenek bildirirken 'can' kullanırız)",
+    explain:"Birds can fly. (Kuşlar uçabilir.)"
+  },
+
+  // 19: Food vocabulary
+  {
+    id:19, type:"mcq", diff:"Easy", topic:"Food",
+    q:"We drink ___ when we are thirsty.",
+    options:["bread","water","rice","chicken"],
+    answer:"water",
+    hint:"Susadığımızda ne içeriz?",
+    explain:"We drink water when thirsty. (Susadığımızda su içeriz.)"
+  },
+
+  // 20: Final challenge - Mixed
+  {
+    id:20, type:"scramble", diff:"Challenge", topic:"Mixed",
+    q:"Make a question:",
+    words:["your","name","is","What","?"],
+    answer:"What is your name?",
+    hint:"Soru sormak için 'What' ile başla",
+    explain:"Correct: 'What is your name?' (Adın ne?)"
   }
 ];
 
-/* State */
+/* State Management */
 let current = 0;
 let score = 0;
 const total = quiz.length;
 document.getElementById('total').innerText = total;
-const review = []; // store {qIdx, correct, studentAnswer}
+const review = [];
+let encouragementMessages = [
+  "Great effort Alp!",
+  "You're doing amazing!",
+  "Keep going, you can do it!",
+  "Turkish to English - you're getting better!",
+  "Say the answers out loud!",
+  "Think in English!",
+  "Well done so far!",
+  "Almost there Alp!"
+];
 
-/* DOM refs */
+/* DOM References */
 const content = document.getElementById('content');
 const diffEl = document.getElementById('difficulty');
+const topicEl = document.getElementById('topic');
 const qtypeEl = document.getElementById('qtype');
 const checkBtn = document.getElementById('checkBtn');
 const nextBtn = document.getElementById('nextBtn');
@@ -288,310 +550,583 @@ const reviewList = document.getElementById('reviewList');
 const restartBtn = document.getElementById('restartBtn');
 const finishBtn = document.getElementById('finishBtn');
 const badgeEl = document.getElementById('badge');
+const encouragementEl = document.getElementById('encouragement');
 
+/* Initialize Quiz */
+renderQuestion();
+updateProgress();
+updateEncouragement();
+
+/* Question Rendering */
 function renderQuestion(){
   feedbackWrap.innerHTML = "";
   nextBtn.style.display = "none";
-  checkBtn.style.display = "inline-block";
-  hintBtn.style.display = "inline-block";
+  checkBtn.style.display = "inline-flex";
+  hintBtn.style.display = "inline-flex";
+  
   const q = quiz[current];
   diffEl.innerText = q.diff;
-  qtypeEl.innerText = q.type === "mcq" ? "Multiple choice" : q.type === "input" ? "Write answer" : q.type;
-  // build UI per type
+  topicEl.innerText = q.topic;
+  
+  // Set question type display text
+  const typeText = {
+    "mcq": "Multiple Choice",
+    "input": "Write Answer",
+    "listen": "Listening",
+    "match": "Matching",
+    "tf": "True/False",
+    "scramble": "Word Order"
+  };
+  qtypeEl.innerText = typeText[q.type] || q.type;
+  
+  // Build question UI
   let html = `<div class="question-text">${escapeHtml(q.q)}</div>`;
-  if(q.type === "mcq"){
-    html += `<div class="hint" id="hintText" style="display:none">${escapeHtml(q.hint)}</div>`;
-    html += `<div class="options" id="options">`;
-    for(const opt of q.options){
-      html += `<button class="opt" data-val="${escapeHtml(opt)}">${escapeHtml(opt)}</button>`;
-    }
-    html += `</div>`;
-  } else if(q.type === "input"){
-    html += `<div class="hint" id="hintText" style="display:none">${escapeHtml(q.hint)}</div>`;
-    html += `<div><input id="textAnswer" placeholder="Type here..." style="width:100%;padding:12px;border-radius:10px;border:1px solid #e8eefc;font-size:15px"></div>`;
-  } else if(q.type === "match"){
-    html += `<div class="hint" id="hintText" style="display:none">${escapeHtml(q.hint)}</div>`;
-    html += `<div class="match-grid">`;
-    // left words
-    html += `<div class="match-col"><strong>Words</strong>`;
-    for(const p of q.pairs){
-      html += `<div class="draggable" draggable="true" data-key="${escapeHtml(p.left)}">${escapeHtml(p.left)}</div>`;
-    }
-    html += `</div>`;
-    // targets
-    html += `<div class="match-col"><strong>Meanings (drop word here)</strong>`;
-    for(const p of q.pairs){
-      html += `<div class="drop-target" data-key="${escapeHtml(p.right)}">${escapeHtml(p.right)}</div>`;
-    }
-    html += `</div>`;
-    html += `</div>`;
-  } else if(q.type === "listen"){
-    html += `<div class="hint" id="hintText" style="display:none">${escapeHtml(q.hint)}</div>`;
-    html += `<div style="display:flex;gap:10px;align-items:center;margin-bottom:12px"><button id="playBtn" class="btn secondary">🔊 Play</button><div class="small">Click to hear the sentence</div></div>`;
-    html += `<div class="options" id="options">`;
-    for(const opt of q.options){
-      html += `<button class="opt" data-val="${escapeHtml(opt)}">${escapeHtml(opt)}</button>`;
-    }
-    html += `</div>`;
-  } else if(q.type === "tf"){
-    html += `<div class="hint" id="hintText" style="display:none">${escapeHtml(q.hint)}</div>`;
-    html += `<div class="options">`;
-    html += `<button class="opt" data-val="true">True</button>`;
-    html += `<button class="opt" data-val="false">False</button>`;
-    html += `</div>`;
-  } else if(q.type === "scramble"){
-    html += `<div class="hint" id="hintText" style="display:none">${escapeHtml(q.hint)}</div>`;
-    html += `<div class="small">Tap words below in order to build the sentence</div>`;
-    html += `<div style="margin:12px 0"><div id="answerArea" style="min-height:42px;padding:8px;border-radius:8px;background:#fbfdff;border:1px dashed #e6eefc"></div></div>`;
-    html += `<div class="scramble-area" id="scrambleArea">`;
-    for(const w of q.words){
-      html += `<div class="word-chip" data-word="${escapeHtml(w)}">${escapeHtml(w)}</div>`;
-    }
-    html += `</div>`;
-    html += `<div style="margin-top:8px"><button id="clearScramble" class="btn secondary">Clear</button></div>`;
+  
+  // Add Turkish translation for harder questions
+  if(q.diff === "Medium" || q.diff === "Challenge"){
+    html += `<div class="small" style="color:var(--muted);margin-bottom:12px">(Turkish: ${getTurkishTranslation(q)})</div>`;
   }
-
+  
+  // Add hint (hidden by default)
+  html += `<div class="hint" id="hintText">${escapeHtml(q.hint)}</div>`;
+  
+  // Question type specific UI
+  switch(q.type){
+    case "mcq":
+    case "listen":
+      html += `<div class="options" id="options">`;
+      q.options.forEach(opt => {
+        html += `<button class="opt" data-val="${escapeHtml(opt)}">${escapeHtml(opt)}</button>`;
+      });
+      html += `</div>`;
+      break;
+      
+    case "input":
+      html += `<input id="textAnswer" class="input-answer" placeholder="Type your answer here..." autocomplete="off">`;
+      break;
+      
+    case "match":
+      html += `<div class="match-grid">`;
+      html += `<div class="match-col"><strong>Words/Images</strong>`;
+      q.pairs.forEach(p => {
+        html += `<div class="draggable" draggable="true" data-key="${escapeHtml(p.left)}">${escapeHtml(p.left)}</div>`;
+      });
+      html += `</div>`;
+      html += `<div class="match-col"><strong>Match Here</strong>`;
+      q.pairs.forEach(p => {
+        html += `<div class="drop-target" data-key="${escapeHtml(p.right)}">${escapeHtml(p.right)}</div>`;
+      });
+      html += `</div>`;
+      html += `</div>`;
+      break;
+      
+    case "tf":
+      html += `<div class="options">`;
+      html += `<button class="opt" data-val="true">✅ True</button>`;
+      html += `<button class="opt" data-val="false">❌ False</button>`;
+      html += `</div>`;
+      break;
+      
+    case "scramble":
+      html += `<div id="answerArea" style="min-height:60px;padding:16px;margin:16px 0;border-radius:12px;background:var(--accent-light);border:2px dashed #c7d2fe"></div>`;
+      html += `<div class="scramble-area" id="scrambleArea">`;
+      // Shuffle words for scrambling
+      const shuffledWords = [...q.words].sort(() => Math.random() - 0.5);
+      shuffledWords.forEach(w => {
+        html += `<div class="word-chip" data-word="${escapeHtml(w)}">${escapeHtml(w)}</div>`;
+      });
+      html += `</div>`;
+      html += `<div style="margin-top:16px">
+        <button id="clearScramble" class="btn secondary">🗑️ Clear</button>
+      </div>`;
+      break;
+  }
+  
+  // Add listening play button
+  if(q.type === "listen"){
+    html = `<div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+      <button id="playBtn" class="btn secondary" style="padding:12px 24px">
+        🔊 Play Sentence
+      </button>
+      <div class="small">Listen carefully and choose</div>
+    </div>` + html;
+  }
+  
   content.innerHTML = html;
+  
+  // Setup event handlers
+  setupEventHandlers(q);
+}
 
-  // attach event handlers
-  if(q.type === "mcq" || q.type === "listen" || q.type === "tf"){
-    const opts = Array.from(document.querySelectorAll('.opt'));
-    opts.forEach(btn=>{
-      btn.addEventListener('click', ()=> {
-        // toggle selection
-        opts.forEach(b=>b.classList.remove('selected'));
+/* Event Handlers Setup */
+function setupEventHandlers(q){
+  // Multiple choice, listening, true/false
+  if(["mcq", "listen", "tf"].includes(q.type)){
+    const opts = document.querySelectorAll('.opt');
+    opts.forEach(btn => {
+      btn.addEventListener('click', () => {
+        opts.forEach(b => b.classList.remove('selected'));
         btn.classList.add('selected');
       });
     });
   }
-
+  
+  // Input field - Enter key support
   if(q.type === "input"){
-    document.getElementById('textAnswer').addEventListener('keydown', (e)=>{
+    const input = document.getElementById('textAnswer');
+    input.focus();
+    input.addEventListener('keydown', (e) => {
       if(e.key === 'Enter') checkAnswer();
     });
   }
-
+  
+  // Drag and drop matching
   if(q.type === "match"){
-    // drag handlers
-    const drags = Array.from(document.querySelectorAll('.draggable'));
-    const drops = Array.from(document.querySelectorAll('.drop-target'));
-    drags.forEach(d=>{
-      d.addEventListener('dragstart', (ev)=>{
+    const drags = document.querySelectorAll('.draggable');
+    const drops = document.querySelectorAll('.drop-target');
+    
+    drags.forEach(d => {
+      d.addEventListener('dragstart', (ev) => {
         ev.dataTransfer.setData('text/plain', d.getAttribute('data-key'));
-        setTimeout(()=> d.style.opacity = '0.4', 50);
+        d.style.opacity = '0.4';
       });
-      d.addEventListener('dragend', ()=> d.style.opacity = '1');
+      d.addEventListener('dragend', () => {
+        drags.forEach(drag => drag.style.opacity = '1');
+      });
     });
-    drops.forEach(t=>{
-      t.addEventListener('dragover', (ev)=>{ ev.preventDefault(); t.classList.add('active')});
-      t.addEventListener('dragleave', ()=> t.classList.remove('active'));
-      t.addEventListener('drop',(ev)=>{
-        ev.preventDefault(); t.classList.remove('active');
+    
+    drops.forEach(t => {
+      t.addEventListener('dragover', (ev) => {
+        ev.preventDefault();
+        t.classList.add('active');
+      });
+      t.addEventListener('dragleave', () => {
+        t.classList.remove('active');
+      });
+      t.addEventListener('drop', (ev) => {
+        ev.preventDefault();
+        t.classList.remove('active');
         const key = ev.dataTransfer.getData('text/plain');
-        // visually set the dropped word (but keep it draggable to allow multiple answers)
-        t.innerHTML = `<strong>${escapeHtml(key)}</strong><div style="font-size:13px;color:var(--muted);margin-top:6px">${escapeHtml(t.getAttribute('data-key'))}</div>`;
+        t.innerHTML = `<strong>${escapeHtml(key)}</strong><br>
+          <small style="color:var(--muted)">${escapeHtml(t.getAttribute('data-key'))}</small>`;
         t.setAttribute('data-answer', key);
       });
     });
   }
-
+  
+  // Word scramble
   if(q.type === "scramble"){
-    const chips = Array.from(document.querySelectorAll('.word-chip'));
+    const chips = document.querySelectorAll('.word-chip');
     const answerArea = document.getElementById('answerArea');
     const clearBtn = document.getElementById('clearScramble');
-    let arr = [];
-    chips.forEach(c=>{
-      c.addEventListener('click', ()=>{
-        arr.push(c.getAttribute('data-word'));
-        updateArea();
+    let selectedWords = [];
+    
+    chips.forEach(c => {
+      c.addEventListener('click', () => {
+        selectedWords.push(c.getAttribute('data-word'));
+        updateScrambleArea();
       });
     });
-    clearBtn.addEventListener('click', ()=>{ arr=[]; updateArea(); });
-    function updateArea(){
-      answerArea.innerHTML = arr.map(w=>`<span style="display:inline-block;margin:4px;padding:6px 8px;background:#fff;border-radius:8px">${escapeHtml(w)}</span>`).join('');
-      answerArea.setAttribute('data-value', arr.join(' '));
+    
+    clearBtn.addEventListener('click', () => {
+      selectedWords = [];
+      updateScrambleArea();
+    });
+    
+    function updateScrambleArea(){
+      answerArea.innerHTML = selectedWords.map(w => 
+        `<span style="display:inline-block;margin:4px;padding:8px 12px;background:white;border-radius:8px;border:2px solid #e8eefc;font-weight:500">${escapeHtml(w)}</span>`
+      ).join(' ');
+      answerArea.setAttribute('data-value', selectedWords.join(' '));
     }
   }
-
-  // listening: play TTS
+  
+  // Listening TTS
   if(q.type === "listen"){
     const playBtn = document.getElementById('playBtn');
-    playBtn.addEventListener('click', ()=> {
+    playBtn.addEventListener('click', () => {
       const msg = new SpeechSynthesisUtterance(q.audioText);
       msg.lang = 'en-US';
-      msg.rate = 0.95;
+      msg.rate = 0.9;
+      msg.pitch = 1;
       speechSynthesis.cancel();
       speechSynthesis.speak(msg);
     });
   }
-
-  // enable hint toggle
-  const hintText = document.getElementById('hintText');
-  hintBtn.onclick = ()=> {
-    if(!hintText) return;
-    hintText.style.display = hintText.style.display === 'none' ? 'block' : 'none';
+  
+  // Hint button
+  hintBtn.onclick = () => {
+    const hintText = document.getElementById('hintText');
+    if(hintText){
+      hintText.classList.toggle('visible');
+      hintBtn.innerHTML = hintText.classList.contains('visible') ? 
+        '<span>👁️</span> Hide Hint' : '<span>💡</span> Hint';
+    }
   };
-
-  // update progress visuals
-  const pct = Math.round((current/total)*100);
-  progressBar.style.width = pct + '%';
 }
 
+/* Check Answer Function */
 function checkAnswer(){
   const q = quiz[current];
   let studentAns = null;
   let correct = false;
-
-  if(q.type === "mcq" || q.type === "listen" || q.type === "tf"){
-    const sel = document.querySelector('.opt.selected');
-    if(!sel){
-      showFeedback("Please choose an option.", "bad"); return;
-    }
-    studentAns = sel.getAttribute('data-val');
-    // boolean convert for tf
-    if(q.type === "tf"){
-      studentAns = studentAns === 'true';
-      correct = studentAns === q.answer;
-    } else {
-      correct = String(studentAns).toLowerCase().trim() === String(q.answer).toLowerCase().trim();
-    }
-  } else if(q.type === "input"){
-    const val = document.getElementById('textAnswer').value || "";
-    studentAns = val.trim();
-    if(studentAns === ""){
-      showFeedback("Type your answer first.", "bad"); return;
-    }
-    correct = studentAns.toLowerCase() === q.answer.toLowerCase();
-  } else if(q.type === "match"){
-    const drops = Array.from(document.querySelectorAll('.drop-target'));
-    // all targets must have data-answer
-    let missing = drops.some(d => !d.getAttribute('data-answer'));
-    if(missing){
-      showFeedback("Please drag all words to their matching meanings.", "bad"); return;
-    }
-    // check pairs: find which left matches which right
-    let allCorrect = true;
-    for(const p of q.pairs){
-      // find target whose data-key equals the right meaning
-      const target = drops.find(d => d.getAttribute('data-key') === p.right);
-      if(!target) { allCorrect=false; break; }
-      const ans = target.getAttribute('data-answer');
-      if(ans !== p.left) { allCorrect=false; break; }
-    }
-    studentAns = "matched";
-    correct = allCorrect;
-  } else if(q.type === "scramble"){
-    const area = document.getElementById('answerArea');
-    const val = area ? (area.getAttribute('data-value') || "") : "";
-    if(!val){
-      showFeedback("Tap words to build the sentence first.", "bad"); return;
-    }
-    studentAns = val.trim();
-    correct = studentAns.toLowerCase() === q.answer.toLowerCase();
+  
+  switch(q.type){
+    case "mcq":
+    case "listen":
+    case "tf":
+      const sel = document.querySelector('.opt.selected');
+      if(!sel){
+        showFeedback("Please choose an option first.", "warning");
+        return;
+      }
+      studentAns = sel.getAttribute('data-val');
+      if(q.type === "tf"){
+        studentAns = studentAns === 'true';
+        correct = studentAns === q.answer;
+      } else {
+        correct = String(studentAns).toLowerCase().trim() === String(q.answer).toLowerCase().trim();
+      }
+      break;
+      
+    case "input":
+      const inputVal = document.getElementById('textAnswer')?.value.trim();
+      if(!inputVal){
+        showFeedback("Please type your answer first.", "warning");
+        return;
+      }
+      studentAns = inputVal;
+      correct = studentAns.toLowerCase() === q.answer.toLowerCase();
+      break;
+      
+    case "match":
+      const drops = document.querySelectorAll('.drop-target');
+      let allMatched = true;
+      Array.from(drops).forEach(d => {
+        if(!d.getAttribute('data-answer')) allMatched = false;
+      });
+      if(!allMatched){
+        showFeedback("Please match all items first.", "warning");
+        return;
+      }
+      studentAns = "Matched pairs";
+      correct = Array.from(drops).every(d => {
+        const answer = d.getAttribute('data-answer');
+        const expected = d.getAttribute('data-key');
+        return q.pairs.some(p => p.left === answer && p.right === expected);
+      });
+      break;
+      
+    case "scramble":
+      const area = document.getElementById('answerArea');
+      const val = area?.getAttribute('data-value') || "";
+      if(!val.trim()){
+        showFeedback("Please arrange the words first.", "warning");
+        return;
+      }
+      studentAns = val.trim();
+      correct = studentAns.toLowerCase() === q.answer.toLowerCase();
+      break;
   }
-
-  // record and update
+  
+  // Record result
   review.push({
     qIdx: current,
     question: q.q,
     answer: q.answer,
     student: studentAns,
-    correct
+    correct: correct
   });
-
+  
+  // Update score
   if(correct){
     score++;
-    showFeedback("✅ Correct! " + (q.explain ? q.explain : ""), "good");
+    scoreEl.innerText = score;
+    const goodMessages = [
+      "Excellent! 🎉",
+      "Perfect! ✅",
+      "Well done! 👍",
+      "Great job! 👏",
+      "Correct! 💫"
+    ];
+    const randomMsg = goodMessages[Math.floor(Math.random() * goodMessages.length)];
+    showFeedback(`${randomMsg} ${q.explain}`, "good");
   } else {
-    showFeedback("❌ Not quite. " + (q.explain ? "Correct: " + q.answer + ". " + q.explain : "Correct: " + q.answer), "bad");
+    showFeedback(`Almost! The correct answer is: <strong>${q.answer}</strong>. ${q.explain}`, "bad");
   }
-  scoreEl.innerText = score;
-
-  // show next button and hide check
+  
+  // Show next button
   checkBtn.style.display = "none";
-  nextBtn.style.display = "inline-block";
+  nextBtn.style.display = "inline-flex";
   hintBtn.style.display = "none";
-  nextBtn.onclick = ()=> {
+  
+  // Setup next button
+  nextBtn.onclick = () => {
     current++;
-    if(current < total){ renderQuestion(); }
-    else { finishQuiz(); }
-    updateProgress();
+    if(current < total){
+      renderQuestion();
+      updateProgress
+            updateProgress();
+      updateEncouragement();
+    } else {
+      finishQuiz();
+    }
   };
 }
 
+/* Show Feedback */
 function showFeedback(msg, kind){
-  feedbackWrap.innerHTML = `<div class="feedback ${kind === 'good' ? 'good' : 'bad'}">${escapeHtml(msg)}</div>`;
+  feedbackWrap.innerHTML = `<div class="feedback ${kind}">${msg}</div>`;
 }
 
+/* Update Progress */
 function updateProgress(){
   const pct = Math.round((current/total)*100);
   progressBar.style.width = pct + '%';
-  // show badge logic
+  updateBadge();
+}
+
+/* Update Encouragement Message */
+function updateEncouragement(){
+  const randomIndex = Math.floor(Math.random() * encouragementMessages.length);
+  encouragementEl.textContent = encouragementMessages[randomIndex];
+}
+
+/* Update Badge */
+function updateBadge(){
   const ratio = score / total;
-  if(ratio === 1) badgeEl.innerText = "Gold 🏅";
-  else if(ratio >= 0.8) badgeEl.innerText = "Silver 🥈";
-  else if(ratio >= 0.5) badgeEl.innerText = "Bronze 🥉";
-  else badgeEl.innerText = "Keep going ✨";
+  let badge = "";
+  
+  if(current === 0){
+    badge = "Starter ⭐";
+  } else if(ratio === 1 && current === total){
+    badge = "Perfect! 🏆";
+  } else if(ratio >= 0.9){
+    badge = "Expert 🥇";
+  } else if(ratio >= 0.7){
+    badge = "Great! 🥈";
+  } else if(ratio >= 0.5){
+    badge = "Good! 🥉";
+  } else if(ratio >= 0.3){
+    badge = "Keep Going! ✨";
+  } else {
+    badge = "Learning 🌱";
+  }
+  
+  badgeEl.innerHTML = `Badge: <span>${badge}</span>`;
 }
 
-/* finish and review */
+/* Finish Quiz */
 function finishQuiz(){
-  // fill review list
-  reviewCard.style.display = "block";
-  content.innerHTML = "";
+  // Hide main card controls
   document.querySelector('.controls').style.display = 'none';
-  feedbackWrap.innerHTML = `<div class="feedback good">Well done, ${escapeHtml(STUDENT)}! Final score: ${score} / ${total}</div>`;
+  
+  // Show final message
+  content.innerHTML = `
+    <div style="text-align:center; padding:40px 20px">
+      <div style="font-size:48px; margin-bottom:20px">🎉</div>
+      <h2 style="margin-bottom:16px">Great Job ${STUDENT}!</h2>
+      <div style="font-size:24px; color:var(--accent); margin-bottom:24px">
+        Final Score: <strong>${score} / ${total}</strong>
+      </div>
+      <div style="background:var(--accent-light); padding:20px; border-radius:12px; margin-bottom:24px">
+        <div style="font-size:18px; margin-bottom:8px">Your Progress:</div>
+        <div style="font-size:14px; color:var(--muted)">
+          ${score >= total*0.8 ? "Excellent! You're ready for A2!" : 
+            score >= total*0.6 ? "Good work! Keep practicing!" : 
+            "Keep learning, you're improving!"}
+        </div>
+      </div>
+    </div>
+  `;
+  
+  // Show review card
+  reviewCard.style.display = "block";
+  
+  // Fill review list
   reviewList.innerHTML = "";
-  review.forEach(r=>{
-    reviewList.innerHTML += `<div class="review-item"><strong>Q:</strong> ${escapeHtml(r.question)}<br>
-      <strong>Your answer:</strong> ${escapeHtml(String(r.student))} <br>
-      <strong>Correct:</strong> ${escapeHtml(String(r.answer))} <br>
-      <small style="color:var(--muted)">Explanation: ${escapeHtml(quiz[r.qIdx].explain || '')}</small>
-    </div>`;
+  review.forEach((r, idx) => {
+    const q = quiz[r.qIdx];
+    const isCorrect = r.correct;
+    
+    reviewList.innerHTML += `
+      <div class="review-item ${isCorrect ? 'correct' : 'incorrect'}">
+        <div style="display:flex; justify-content:space-between; margin-bottom:8px">
+          <strong>Question ${idx + 1}:</strong>
+          <span style="color:${isCorrect ? 'var(--good)' : 'var(--bad)'}; font-weight:600">
+            ${isCorrect ? '✓ Correct' : '✗ Incorrect'}
+          </span>
+        </div>
+        <div style="margin-bottom:8px"><strong>Q:</strong> ${escapeHtml(r.question)}</div>
+        <div style="margin-bottom:8px"><strong>Your answer:</strong> ${escapeHtml(String(r.student))}</div>
+        <div style="margin-bottom:8px"><strong>Correct answer:</strong> ${escapeHtml(String(r.answer))}</div>
+        <div style="font-size:13px; color:var(--muted)">
+          <strong>Explanation:</strong> ${escapeHtml(q.explain || '')}
+        </div>
+      </div>
+    `;
   });
-  updateProgress();
+  
+  updateBadge();
 }
 
-/* restart */
-restartBtn.onclick = ()=> {
-  current = 0; score = 0; review.length = 0;
+/* Get Turkish Translation */
+function getTurkishTranslation(q){
+  // Simple translations for common questions
+  const translations = {
+    "I ___ a student.": "Ben ___ bir öğrenciyim.",
+    "What is this? 🍎": "Bu nedir? 🍎",
+    "Fill the blank: My brother ___ 10 years old.": "Boşluğu doldur: Erkek kardeşim ___ 10 yaşında.",
+    "The sky is green. True or False?": "Gökyüzü yeşildir. Doğru mu Yanlış mı?",
+    "How many fingers on two hands?": "İki elde kaç parmak var?",
+    "The cat is sleeping ___ the chair.": "Kedi sandalyenin ___ uyuyor.",
+    "Write the plural of 'book':": "'Book' kelimesinin çoğulunu yaz:",
+    "My father's wife is my ___.": "Babamın eşi benim ___.",
+    "We write with a ___.": "Biz bir ___ ile yazarız.",
+    "He ___ (play) football every Saturday.": "O her Cumartesi futbol ___.",
+    "When it rains, we need an ___.": "Yağmur yağdığında, bir ___ lazım.",
+    "We sleep at ___.": "Biz ___ uyuruz.",
+    "Birds ___ fly.": "Kuşlar ___ uçabilir.",
+    "We drink ___ when we are thirsty.": "Susadığımızda ___ içeriz."
+  };
+  
+  return translations[q.q] || "(Türkçe çeviri)";
+}
+
+/* Restart Quiz */
+restartBtn.onclick = () => {
+  current = 0;
+  score = 0;
+  review.length = 0;
   reviewCard.style.display = "none";
   document.querySelector('.controls').style.display = 'flex';
-  document.getElementById('score').innerText = '0';
+  scoreEl.innerText = '0';
   progressBar.style.width = '0%';
-  document.getElementById('badge').innerText = '—';
   renderQuestion();
+  updateProgress();
+  updateEncouragement();
 };
 
-/* finish close */
-finishBtn.onclick = ()=> {
+/* Finish Button */
+finishBtn.onclick = () => {
   reviewCard.style.display = 'none';
-  // keep final screen in main
+  // Show celebration message
+  feedbackWrap.innerHTML = `
+    <div class="feedback good" style="text-align:center">
+      <div style="font-size:48px">🎓</div>
+      <h3>Quiz Completed!</h3>
+      <p>You scored ${score} out of ${total}</p>
+      <p>Great work Alp! Keep practicing English every day!</p>
+    </div>
+  `;
 };
 
-/* initial */
-renderQuestion();
-updateProgress();
-
-/* utilities */
+/* Utility Functions */
 function escapeHtml(s){
-  if(s===null || s===undefined) return '';
-  return String(s)
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;');
+  if(s === null || s === undefined) return '';
+  const div = document.createElement('div');
+  div.textContent = s;
+  return div.innerHTML;
 }
 
-/* wire check button */
-checkBtn.addEventListener('click', checkAnswer);
-
-/* small accessibility: keyboard next via N key when Next visible */
-document.addEventListener('keydown', (e)=>{
-  if(e.key.toLowerCase() === 'n' && nextBtn.style.display !== 'none') nextBtn.click();
+/* Keyboard Shortcuts */
+document.addEventListener('keydown', (e) => {
+  // N for next when available
+  if(e.key.toLowerCase() === 'n' && nextBtn.style.display !== 'none'){
+    nextBtn.click();
+  }
+  // Enter for check answer
+  if(e.key === 'Enter' && checkBtn.style.display !== 'none'){
+    checkAnswer();
+  }
+  // H for hint
+  if(e.key.toLowerCase() === 'h'){
+    hintBtn.click();
+  }
+  // R for restart (when review is visible)
+  if(e.key.toLowerCase() === 'r' && reviewCard.style.display !== 'none'){
+    restartBtn.click();
+  }
 });
 
+/* Initialize Speech Synthesis */
+if('speechSynthesis' in window){
+  speechSynthesis.onvoiceschanged = () => {
+    console.log("Speech synthesis ready");
+  };
+}
+
+/* Add confetti effect for perfect score */
+function celebrate(){
+  if(score === total){
+    // Simple confetti effect
+    const confetti = document.createElement('div');
+    confetti.style.cssText = `
+      position:fixed; top:0; left:0; width:100%; height:100%; 
+      pointer-events:none; z-index:9999;
+    `;
+    document.body.appendChild(confetti);
+    
+    for(let i=0; i<50; i++){
+      const dot = document.createElement('div');
+      dot.style.cssText = `
+        position:absolute; width:10px; height:10px; background:${i%3===0?'#3b64ff':i%3===1?'#6a86ff':'#ff6b6b'};
+        border-radius:50%; top:-20px; left:${Math.random()*100}vw;
+        animation:fall ${1+Math.random()*2}s linear ${Math.random()*0.5}s forwards;
+      `;
+      confetti.appendChild(dot);
+    }
+    
+    // Add CSS animation
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes fall {
+        to { transform: translateY(100vh) rotate(${360*Math.random()}deg); }
+      }
+    `;
+    document.head.appendChild(style);
+    
+    setTimeout(() => {
+      document.body.removeChild(confetti);
+      document.head.removeChild(style);
+    }, 3000);
+  }
+}
+
+/* Wire up check button */
+checkBtn.addEventListener('click', checkAnswer);
+
+/* Add celebration on finish */
+const originalFinishQuiz = finishQuiz;
+finishQuiz = function(){
+  originalFinishQuiz.call(this);
+  setTimeout(celebrate, 500);
+};
+
+/* Add audio feedback */
+function playSound(type){
+  if(type === 'correct'){
+    // Play success sound if available
+    try{
+      const audio = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAA==');
+      audio.volume = 0.3;
+      audio.play().catch(() => {});
+    }catch(e){}
+  }
+}
+
+/* Modify checkAnswer to include sound */
+const originalCheckAnswer = checkAnswer;
+checkAnswer = function(){
+  originalCheckAnswer.call(this);
+  const q = quiz[current];
+  const sel = document.querySelector('.opt.selected');
+  if(sel){
+    if(sel.getAttribute('data-val') === q.answer){
+      playSound('correct');
+    }
+  }
+};
 </script>
 </body>
 </html>
-
