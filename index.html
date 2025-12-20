@@ -123,7 +123,7 @@
       <div class="title">
         <div class="avatar" aria-hidden="true">MA</div>
         <div>
-          <h1>Hi Alp — A1 English Quiz</h1>
+          <h1>Hello Alp</h1>
           <p class="lead"></p>
         </div>
       </div>
@@ -199,78 +199,66 @@ const quiz = [
   // 3: Fill-in-the-blank (text)
   {
     id:3, type:"input", diff:"Easy", topic:"Verb to be",
-    q:"Fill the blank: She ___ my sister.",
+    q:"Fill the blank: Erbil ___ my friend.",
     answer:"is",
     hint:"We use 'is' with he/she/it.",
-    explain:"Use 'is' for she: 'She is my sister.'"
+    explain:"Use 'is' for name: 'Erbil is my sister.'"
   },
 
-  // 4: Matching (drag & drop)
-  {
-    id:4, type:"match", diff:"Medium", topic:"Family words",
-    q:"Match the word to its meaning:",
-    pairs:[
-      {left:"mother", right:"the female parent"},
-      {left:"father", right:"the male parent"},
-      {left:"brother", right:"a male sibling"}
-    ],
-    explain:"Mother = female parent, Father = male parent, Brother = male sibling.",
-    hint:"Think family."
-  },
 
-  // 5: Listening (play phrase; choose)
+  // 4: Listening (play phrase; choose)
   {
-    id:5, type:"listen", diff:"Medium", topic:"Greetings (listening)",
+    id:4, type:"listen", diff:"Medium", topic:"Greetings (listening)",
     q:"Listen and choose the sentence you hear.",
-    audioText:"Good morning, how are you?",
-    options:["Good night, sleep well.","Good morning, how are you?","See you soon!"],
-    answer:"Good morning, how are you?",
+    audioText:"Good morning Muhammed, how are you?",
+    options:["Good night, sleep well.","Good morning Muhammed, how are you?","See you soon!"],
+    answer:"Good morning Muhammed, how are you?",
     hint:"Starts with 'Good morning'.",
-    explain:"The sentence says 'Good morning, how are you?'"
+    explain:"The sentence says 'Good morning Muhammed, how are you?'"
   },
 
-  // 6: True/False
+  // 5: True/False
   {
-    id:6, type:"tf", diff:"Easy", topic:"Vocabulary (Colours)",
-    q:"The sky is usually green. True or False?",
+    id:5, type:"tf", diff:"Easy", topic:"Vocabulary (Colours)",
+    q:"The sky is green. True or False?",
     answer:false,
-    hint:"Sky is usually blue.",
-    explain:"Sky is usually blue, so the statement is False."
+    hint:"Sky is blue.",
+    explain:"Sky is blue, so green is False."
   },
 
-  // 7: Scramble (reorder words to make sentence)
+  // 6: Scramble (reorder words to make sentence)
   {
-    id:7, type:"scramble", diff:"Medium", topic:"Sentence order",
-    q:"Order the words to make a sentence: (I / pizza / like)",
-    words:["I","like","pizza"],
-    answer:"I like pizza",
+    id:6, type:"scramble", diff:"Medium", topic:"Sentence order",
+    q:"Order the words to Make a sentence",
+    words:["bag","the","to", "glass", "pizza", "is", "a", "There", "next"],
+    answer:"There is a bag next to the glass",
     hint:"Subject + verb + object",
-    explain:"Correct order: 'I like pizza.'"
+    explain:"Correct order: 'There is a bag next to the glass.'"
   },
 
-  // 8: Number MCQ
+  // 7: Number MCQ
   {
-    id:8, type:"mcq", diff:"Very easy", topic:"Numbers",
+    id:6, type:"mcq", diff:"Very easy", topic:"Numbers",
     q:"How many fingers on one hand?",
     options:["3","5","8"],
     answer:"5",
-    hint:"Think normal human hand.",
-    explain:"A normal human hand has 5 fingers."
+    hint:"bir elde kaç parmak var?",
+    explain:"A human hand has 5 fingers."
   },
 
-  // 9: Prepositions (choose)
+  // 8: Prepositions (choose)
   {
-    id:9, type:"mcq", diff:"Medium", topic:"Prepositions",
+    id:8, type:"mcq", diff:"Medium", topic:"Prepositions",
     q:"The cat is ___ the box.",
     options:["in","on","under"],
     answer:"in",
-    hint:"Inside the box.",
+    hint:"kutunun içinde.",
     explain:"If the cat is inside the box we use 'in'."
   },
 
-  //10: Short input / plural
+  //9: Short input / plural
   {
-    id:10, type:"input", diff:"Medium", topic:"Plural nouns",
+    id:9, type:"input", diff:"Medium", topic:"Plural nouns",
     q:"Write the plural of 'book'.",
     answer:"books",
     hint:"Add 's' for most nouns.",
@@ -606,3 +594,4 @@ document.addEventListener('keydown', (e)=>{
 </script>
 </body>
 </html>
+
