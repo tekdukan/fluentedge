@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Alp — A1 English Quiz (10 questions)</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<style>
+  :root{
+    --bg:#f3f6ff;
+    --card:#ffffff;
+    --accent:#3b64ff;
+    --accent-2:#6a86ff;
+    --muted:#6b7480;
+    --good:#16a34a;
+    --bad:#ef4444;
+    --glass: rgba(255,255,255,0.7);
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family: Inter, system-ui, Arial, sans-serif;
+    background: linear-gradient(180deg,#eef2ff 0%, #f9fbff 100%);
+    color:#222;
+    padding:28px;
+    display:flex;
+    justify-content:center;
+  }
+  .wrap{
+    width:100%;
+    max-width:880px;
+  }
+
+  header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:18px;
+  }
+  .title{
+    display:flex;
+    gap:12px;
+    align-items:center;
+  }
+  .avatar{
+    width:64px;height:64px;border-radius:12px;
+    background:linear-gradient(135deg,var(--accent),var(--accent-2));
+    display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:20px;
+    box-shadow:0 6px 18px rgba(59,100,255,0.18);
+  }
+  h1{margin:0;font-size:20px}
+  p.lead{margin:0;color:var(--muted);font-size:14px}
+
+  .status{
+    text-align:right;
+  }
+  .progress-wrap{background:#e9eefc;border-radius:999px;height:12px;overflow:hidden;margin-top:8px}
+  .progress-bar{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2));width:0%}
+  .card{
+    background:var(--card);
+    border-radius:var(--radius);
+    padding:20px;
+    box-shadow:0 8px 30px rgba(20,30,80,0.06);
+    margin-bottom:16px;
+  }
+
+  .meta{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    margin-bottom:12px;
+  }
+  .difficulty{
+    font-size:13px;color:var(--muted);background:#f3f6ff;padding:6px 10px;border-radius:999px;
+  }
+
+  .question-text{font-size:20px;margin:6px 0 14px}
+  .hint{font-size:13px;color:var(--muted);margin-bottom:8px}
+  .options{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+  button.opt{
+    padding:12px;border-radius:10px;border:0;background:#f3f6ff;cursor:pointer;font-size:15px;
+    box-shadow:inset 0 -2px 0 rgba(0,0,0,0.03);
+  }
+  button.opt.selected{outline:3px solid rgba(59,100,255,0.12);background:linear-gradient(180deg,#fff,#f0f5ff)}
+  .controls{display:flex;gap:8px;align-items:center;justify-content:flex-end;margin-top:14px}
+  .btn{
+    border:0;padding:10px 14px;border-radius:10px;background:var(--accent);color:white;cursor:pointer;font-weight:600;
+  }
+  .btn.secondary{background:white;color:var(--accent);border:1px solid #dfe9ff}
+  .feedback{margin-top:12px;font-size:16px}
+  .feedback.good{color:var(--good)}
+  .feedback.bad{color:var(--bad)}
+  .small{font-size:13px;color:var(--muted)}
+
+  /* matching / drag */
+  .match-grid{display:flex;gap:18px;flex-wrap:wrap}
+  .match-col{flex:1;min-width:200px;padding:10px;border-radius:10px;background:#fbfdff}
+  .draggable{
+    padding:10px;border-radius:8px;background:white;margin:8px 0;border:1px dashed #e6eefc;cursor:grab;
+  }
+  .drop-target{min-height:44px;border-radius:8px;padding:8px;background:#eef4ff;border:2px dashed transparent}
+  .drop-target.active{border-color:rgba(59,100,255,0.28);background:#f7f9ff}
+
+  /* scramble */
+  .scramble-area{display:flex;gap:10px;flex-wrap:wrap}
+  .word-chip{padding:10px 12px;border-radius:999px;background:#f3f6ff;cursor:pointer}
+
+  footer{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px}
+  .score{font-weight:700;color:var(--accent)}
+  .review-list{margin-top:12px}
+  .review-item{padding:10px;border-radius:8px;background:#fbfdff;margin-bottom:8px}
+
+  @media (max-width:640px){
+    .options{grid-template-columns:repeat(2,1fr)}
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="title">
+        <div class="avatar" aria-hidden="true">MA</div>
+        <div>
+          <h1>Hi Alp — A1 English Quiz</h1>
+          <p class="lead"></p>
+        </div>
+      </div>
+      <div class="status">
+        <div class="small">Score: <span id="score">0</span> / <span id="total">10</span></div>
+        <div class="progress-wrap" aria-hidden="true" style="width:220px">
+          <div class="progress-bar" id="progressBar"></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="card" id="card">
+      <div class="meta">
+        <div class="difficulty" id="difficulty">Easy</div>
+        <div class="small" id="qtype">Multiple choice</div>
+      </div>
+
+      <div id="content">
+        <!-- dynamic content -->
+      </div>
+
+      <div class="controls">
+        <button class="btn secondary" id="hintBtn">Show hint</button>
+        <button class="btn" id="checkBtn">Check answer</button>
+        <button class="btn" id="nextBtn" style="display:none">Next →</button>
+      </div>
+
+      <div id="feedbackWrap"></div>
+    </main>
+
+    <div class="card" id="reviewCard" style="display:none">
+      <h3>Review & Results</h3>
+      <p class="small">You can see correct answers and explanations. Restart anytime.</p>
+      <div id="reviewList" class="review-list"></div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px">
+        <button class="btn secondary" id="restartBtn">Restart</button>
+        <button class="btn" id="finishBtn">Close</button>
+      </div>
+    </div>
+
+    <footer>
+      <div class="small">Say the answers out loud</div>
+      <div class="score">Badge: <span id="badge">—</span></div>
+    </footer>
+  </div>
+
+<script>
+/* Student */
+const STUDENT = "Muhammad Alp";
+
+/* Quiz data: 10 questions, different types */
+const quiz = [
+  // 1: Multiple choice, very easy
+  {
+    id:1, type:"mcq", diff:"Very easy", topic:"Introductions",
+    q:"I ___ a student.",
+    options:["am","is","are"],
+    answer:"am",
+    hint:"Use 'I' + ___",
+    explain:"We use 'am' with I: 'I am a student.'"
+  },
+
+  // 2: Emoji picture MCQ
+  {
+    id:2, type:"mcq", diff:"Easy", topic:"Vocabulary (Food)",
+    q:"What is this? 🍎",
+    options:["apple","banana","orange"],
+    answer:"apple",
+    hint:"It's red and crunchy.",
+    explain:"This emoji is an apple — apple."
+  },
+
+  // 3: Fill-in-the-blank (text)
+  {
+    id:3, type:"input", diff:"Easy", topic:"Verb to be",
+    q:"Fill the blank: She ___ my sister.",
+    answer:"is",
+    hint:"We use 'is' with he/she/it.",
+    explain:"Use 'is' for she: 'She is my sister.'"
+  },
+
+  // 4: Matching (drag & drop)
+  {
+    id:4, type:"match", diff:"Medium", topic:"Family words",
+    q:"Match the word to its meaning:",
+    pairs:[
+      {left:"mother", right:"the female parent"},
+      {left:"father", right:"the male parent"},
+      {left:"brother", right:"a male sibling"}
+    ],
+    explain:"Mother = female parent, Father = male parent, Brother = male sibling.",
+    hint:"Think family."
+  },
+
+  // 5: Listening (play phrase; choose)
+  {
+    id:5, type:"listen", diff:"Medium", topic:"Greetings (listening)",
+    q:"Listen and choose the sentence you hear.",
+    audioText:"Good morning, how are you?",
+    options:["Good night, sleep well.","Good morning, how are you?","See you soon!"],
+    answer:"Good morning, how are you?",
+    hint:"Starts with 'Good morning'.",
+    explain:"The sentence says 'Good morning, how are you?'"
+  },
+
+  // 6: True/False
+  {
+    id:6, type:"tf", diff:"Easy", topic:"Vocabulary (Colours)",
+    q:"The sky is usually green. True or False?",
+    answer:false,
+    hint:"Sky is usually blue.",
+    explain:"Sky is usually blue, so the statement is False."
+  },
+
+  // 7: Scramble (reorder words to make sentence)
+  {
+    id:7, type:"scramble", diff:"Medium", topic:"Sentence order",
+    q:"Order the words to make a sentence: (I / pizza / like)",
+    words:["I","like","pizza"],
+    answer:"I like pizza",
+    hint:"Subject + verb + object",
+    explain:"Correct order: 'I like pizza.'"
+  },
+
+  // 8: Number MCQ
+  {
+    id:8, type:"mcq", diff:"Very easy", topic:"Numbers",
+    q:"How many fingers on one hand?",
+    options:["3","5","8"],
+    answer:"5",
+    hint:"Think normal human hand.",
+    explain:"A normal human hand has 5 fingers."
+  },
+
+  // 9: Prepositions (choose)
+  {
+    id:9, type:"mcq", diff:"Medium", topic:"Prepositions",
+    q:"The cat is ___ the box.",
+    options:["in","on","under"],
+    answer:"in",
+    hint:"Inside the box.",
+    explain:"If the cat is inside the box we use 'in'."
+  },
+
+  //10: Short input / plural
+  {
+    id:10, type:"input", diff:"Medium", topic:"Plural nouns",
+    q:"Write the plural of 'book'.",
+    answer:"books",
+    hint:"Add 's' for most nouns.",
+    explain:"Plural of book is 'books'."
+  }
+];
+
+/* State */
+let current = 0;
+let score = 0;
+const total = quiz.length;
+document.getElementById('total').innerText = total;
+const review = []; // store {qIdx, correct, studentAnswer}
+
+/* DOM refs */
+const content = document.getElementById('content');
+const diffEl = document.getElementById('difficulty');
+const qtypeEl = document.getElementById('qtype');
+const checkBtn = document.getElementById('checkBtn');
+const nextBtn = document.getElementById('nextBtn');
+const hintBtn = document.getElementById('hintBtn');
+const feedbackWrap = document.getElementById('feedbackWrap');
+const progressBar = document.getElementById('progressBar');
+const scoreEl = document.getElementById('score');
+const reviewCard = document.getElementById('reviewCard');
+const reviewList = document.getElementById('reviewList');
+const restartBtn = document.getElementById('restartBtn');
+const finishBtn = document.getElementById('finishBtn');
+const badgeEl = document.getElementById('badge');
+
+function renderQuestion(){
+  feedbackWrap.innerHTML = "";
+  nextBtn.style.display = "none";
+  checkBtn.style.display = "inline-block";
+  hintBtn.style.display = "inline-block";
+  const q = quiz[current];
+  diffEl.innerText = q.diff;
+  qtypeEl.innerText = q.type === "mcq" ? "Multiple choice" : q.type === "input" ? "Write answer" : q.type;
+  // build UI per type
+  let html = `<div class="question-text">${escapeHtml(q.q)}</div>`;
+  if(q.type === "mcq"){
+    html += `<div class="hint" id="hintText" style="display:none">${escapeHtml(q.hint)}</div>`;
+    html += `<div class="options" id="options">`;
+    for(const opt of q.options){
+      html += `<button class="opt" data-val="${escapeHtml(opt)}">${escapeHtml(opt)}</button>`;
+    }
+    html += `</div>`;
+  } else if(q.type === "input"){
+    html += `<div class="hint" id="hintText" style="display:none">${escapeHtml(q.hint)}</div>`;
+    html += `<div><input id="textAnswer" placeholder="Type here..." style="width:100%;padding:12px;border-radius:10px;border:1px solid #e8eefc;font-size:15px"></div>`;
+  } else if(q.type === "match"){
+    html += `<div class="hint" id="hintText" style="display:none">${escapeHtml(q.hint)}</div>`;
+    html += `<div class="match-grid">`;
+    // left words
+    html += `<div class="match-col"><strong>Words</strong>`;
+    for(const p of q.pairs){
+      html += `<div class="draggable" draggable="true" data-key="${escapeHtml(p.left)}">${escapeHtml(p.left)}</div>`;
+    }
+    html += `</div>`;
+    // targets
+    html += `<div class="match-col"><strong>Meanings (drop word here)</strong>`;
+    for(const p of q.pairs){
+      html += `<div class="drop-target" data-key="${escapeHtml(p.right)}">${escapeHtml(p.right)}</div>`;
+    }
+    html += `</div>`;
+    html += `</div>`;
+  } else if(q.type === "listen"){
+    html += `<div class="hint" id="hintText" style="display:none">${escapeHtml(q.hint)}</div>`;
+    html += `<div style="display:flex;gap:10px;align-items:center;margin-bottom:12px"><button id="playBtn" class="btn secondary">🔊 Play</button><div class="small">Click to hear the sentence</div></div>`;
+    html += `<div class="options" id="options">`;
+    for(const opt of q.options){
+      html += `<button class="opt" data-val="${escapeHtml(opt)}">${escapeHtml(opt)}</button>`;
+    }
+    html += `</div>`;
+  } else if(q.type === "tf"){
+    html += `<div class="hint" id="hintText" style="display:none">${escapeHtml(q.hint)}</div>`;
+    html += `<div class="options">`;
+    html += `<button class="opt" data-val="true">True</button>`;
+    html += `<button class="opt" data-val="false">False</button>`;
+    html += `</div>`;
+  } else if(q.type === "scramble"){
+    html += `<div class="hint" id="hintText" style="display:none">${escapeHtml(q.hint)}</div>`;
+    html += `<div class="small">Tap words below in order to build the sentence</div>`;
+    html += `<div style="margin:12px 0"><div id="answerArea" style="min-height:42px;padding:8px;border-radius:8px;background:#fbfdff;border:1px dashed #e6eefc"></div></div>`;
+    html += `<div class="scramble-area" id="scrambleArea">`;
+    for(const w of q.words){
+      html += `<div class="word-chip" data-word="${escapeHtml(w)}">${escapeHtml(w)}</div>`;
+    }
+    html += `</div>`;
+    html += `<div style="margin-top:8px"><button id="clearScramble" class="btn secondary">Clear</button></div>`;
+  }
+
+  content.innerHTML = html;
+
+  // attach event handlers
+  if(q.type === "mcq" || q.type === "listen" || q.type === "tf"){
+    const opts = Array.from(document.querySelectorAll('.opt'));
+    opts.forEach(btn=>{
+      btn.addEventListener('click', ()=> {
+        // toggle selection
+        opts.forEach(b=>b.classList.remove('selected'));
+        btn.classList.add('selected');
+      });
+    });
+  }
+
+  if(q.type === "input"){
+    document.getElementById('textAnswer').addEventListener('keydown', (e)=>{
+      if(e.key === 'Enter') checkAnswer();
+    });
+  }
+
+  if(q.type === "match"){
+    // drag handlers
+    const drags = Array.from(document.querySelectorAll('.draggable'));
+    const drops = Array.from(document.querySelectorAll('.drop-target'));
+    drags.forEach(d=>{
+      d.addEventListener('dragstart', (ev)=>{
+        ev.dataTransfer.setData('text/plain', d.getAttribute('data-key'));
+        setTimeout(()=> d.style.opacity = '0.4', 50);
+      });
+      d.addEventListener('dragend', ()=> d.style.opacity = '1');
+    });
+    drops.forEach(t=>{
+      t.addEventListener('dragover', (ev)=>{ ev.preventDefault(); t.classList.add('active')});
+      t.addEventListener('dragleave', ()=> t.classList.remove('active'));
+      t.addEventListener('drop',(ev)=>{
+        ev.preventDefault(); t.classList.remove('active');
+        const key = ev.dataTransfer.getData('text/plain');
+        // visually set the dropped word (but keep it draggable to allow multiple answers)
+        t.innerHTML = `<strong>${escapeHtml(key)}</strong><div style="font-size:13px;color:var(--muted);margin-top:6px">${escapeHtml(t.getAttribute('data-key'))}</div>`;
+        t.setAttribute('data-answer', key);
+      });
+    });
+  }
+
+  if(q.type === "scramble"){
+    const chips = Array.from(document.querySelectorAll('.word-chip'));
+    const answerArea = document.getElementById('answerArea');
+    const clearBtn = document.getElementById('clearScramble');
+    let arr = [];
+    chips.forEach(c=>{
+      c.addEventListener('click', ()=>{
+        arr.push(c.getAttribute('data-word'));
+        updateArea();
+      });
+    });
+    clearBtn.addEventListener('click', ()=>{ arr=[]; updateArea(); });
+    function updateArea(){
+      answerArea.innerHTML = arr.map(w=>`<span style="display:inline-block;margin:4px;padding:6px 8px;background:#fff;border-radius:8px">${escapeHtml(w)}</span>`).join('');
+      answerArea.setAttribute('data-value', arr.join(' '));
+    }
+  }
+
+  // listening: play TTS
+  if(q.type === "listen"){
+    const playBtn = document.getElementById('playBtn');
+    playBtn.addEventListener('click', ()=> {
+      const msg = new SpeechSynthesisUtterance(q.audioText);
+      msg.lang = 'en-US';
+      msg.rate = 0.95;
+      speechSynthesis.cancel();
+      speechSynthesis.speak(msg);
+    });
+  }
+
+  // enable hint toggle
+  const hintText = document.getElementById('hintText');
+  hintBtn.onclick = ()=> {
+    if(!hintText) return;
+    hintText.style.display = hintText.style.display === 'none' ? 'block' : 'none';
+  };
+
+  // update progress visuals
+  const pct = Math.round((current/total)*100);
+  progressBar.style.width = pct + '%';
+}
+
+function checkAnswer(){
+  const q = quiz[current];
+  let studentAns = null;
+  let correct = false;
+
+  if(q.type === "mcq" || q.type === "listen" || q.type === "tf"){
+    const sel = document.querySelector('.opt.selected');
+    if(!sel){
+      showFeedback("Please choose an option.", "bad"); return;
+    }
+    studentAns = sel.getAttribute('data-val');
+    // boolean convert for tf
+    if(q.type === "tf"){
+      studentAns = studentAns === 'true';
+      correct = studentAns === q.answer;
+    } else {
+      correct = String(studentAns).toLowerCase().trim() === String(q.answer).toLowerCase().trim();
+    }
+  } else if(q.type === "input"){
+    const val = document.getElementById('textAnswer').value || "";
+    studentAns = val.trim();
+    if(studentAns === ""){
+      showFeedback("Type your answer first.", "bad"); return;
+    }
+    correct = studentAns.toLowerCase() === q.answer.toLowerCase();
+  } else if(q.type === "match"){
+    const drops = Array.from(document.querySelectorAll('.drop-target'));
+    // all targets must have data-answer
+    let missing = drops.some(d => !d.getAttribute('data-answer'));
+    if(missing){
+      showFeedback("Please drag all words to their matching meanings.", "bad"); return;
+    }
+    // check pairs: find which left matches which right
+    let allCorrect = true;
+    for(const p of q.pairs){
+      // find target whose data-key equals the right meaning
+      const target = drops.find(d => d.getAttribute('data-key') === p.right);
+      if(!target) { allCorrect=false; break; }
+      const ans = target.getAttribute('data-answer');
+      if(ans !== p.left) { allCorrect=false; break; }
+    }
+    studentAns = "matched";
+    correct = allCorrect;
+  } else if(q.type === "scramble"){
+    const area = document.getElementById('answerArea');
+    const val = area ? (area.getAttribute('data-value') || "") : "";
+    if(!val){
+      showFeedback("Tap words to build the sentence first.", "bad"); return;
+    }
+    studentAns = val.trim();
+    correct = studentAns.toLowerCase() === q.answer.toLowerCase();
+  }
+
+  // record and update
+  review.push({
+    qIdx: current,
+    question: q.q,
+    answer: q.answer,
+    student: studentAns,
+    correct
+  });
+
+  if(correct){
+    score++;
+    showFeedback("✅ Correct! " + (q.explain ? q.explain : ""), "good");
+  } else {
+    showFeedback("❌ Not quite. " + (q.explain ? "Correct: " + q.answer + ". " + q.explain : "Correct: " + q.answer), "bad");
+  }
+  scoreEl.innerText = score;
+
+  // show next button and hide check
+  checkBtn.style.display = "none";
+  nextBtn.style.display = "inline-block";
+  hintBtn.style.display = "none";
+  nextBtn.onclick = ()=> {
+    current++;
+    if(current < total){ renderQuestion(); }
+    else { finishQuiz(); }
+    updateProgress();
+  };
+}
+
+function showFeedback(msg, kind){
+  feedbackWrap.innerHTML = `<div class="feedback ${kind === 'good' ? 'good' : 'bad'}">${escapeHtml(msg)}</div>`;
+}
+
+function updateProgress(){
+  const pct = Math.round((current/total)*100);
+  progressBar.style.width = pct + '%';
+  // show badge logic
+  const ratio = score / total;
+  if(ratio === 1) badgeEl.innerText = "Gold 🏅";
+  else if(ratio >= 0.8) badgeEl.innerText = "Silver 🥈";
+  else if(ratio >= 0.5) badgeEl.innerText = "Bronze 🥉";
+  else badgeEl.innerText = "Keep going ✨";
+}
+
+/* finish and review */
+function finishQuiz(){
+  // fill review list
+  reviewCard.style.display = "block";
+  content.innerHTML = "";
+  document.querySelector('.controls').style.display = 'none';
+  feedbackWrap.innerHTML = `<div class="feedback good">Well done, ${escapeHtml(STUDENT)}! Final score: ${score} / ${total}</div>`;
+  reviewList.innerHTML = "";
+  review.forEach(r=>{
+    reviewList.innerHTML += `<div class="review-item"><strong>Q:</strong> ${escapeHtml(r.question)}<br>
+      <strong>Your answer:</strong> ${escapeHtml(String(r.student))} <br>
+      <strong>Correct:</strong> ${escapeHtml(String(r.answer))} <br>
+      <small style="color:var(--muted)">Explanation: ${escapeHtml(quiz[r.qIdx].explain || '')}</small>
+    </div>`;
+  });
+  updateProgress();
+}
+
+/* restart */
+restartBtn.onclick = ()=> {
+  current = 0; score = 0; review.length = 0;
+  reviewCard.style.display = "none";
+  document.querySelector('.controls').style.display = 'flex';
+  document.getElementById('score').innerText = '0';
+  progressBar.style.width = '0%';
+  document.getElementById('badge').innerText = '—';
+  renderQuestion();
+};
+
+/* finish close */
+finishBtn.onclick = ()=> {
+  reviewCard.style.display = 'none';
+  // keep final screen in main
+};
+
+/* initial */
+renderQuestion();
+updateProgress();
+
+/* utilities */
+function escapeHtml(s){
+  if(s===null || s===undefined) return '';
+  return String(s)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+
+/* wire check button */
+checkBtn.addEventListener('click', checkAnswer);
+
+/* small accessibility: keyboard next via N key when Next visible */
+document.addEventListener('keydown', (e)=>{
+  if(e.key.toLowerCase() === 'n' && nextBtn.style.display !== 'none') nextBtn.click();
+});
+
+</script>
+</body>
+</html>
