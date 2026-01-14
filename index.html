@@ -1,1125 +1,818 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
-<meta charset="utf-8" />
-<title>Alp — A1 English Quiz (20 questions)</title>
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<style>
-  :root{
-    --bg:#f3f6ff;
-    --card:#ffffff;
-    --accent:#3b64ff;
-    --accent-2:#6a86ff;
-    --accent-light:#eef4ff;
-    --muted:#6b7480;
-    --good:#16a34a;
-    --bad:#ef4444;
-    --warning:#f59e0b;
-    --glass: rgba(255,255,255,0.7);
-    --radius:14px;
-    --shadow:0 8px 30px rgba(20,30,80,0.08);
-    --shadow-hover:0 12px 40px rgba(59,100,255,0.12);
-  }
-  *{box-sizing:border-box; margin:0; padding:0}
-  body{
-    font-family: 'Inter', system-ui, -apple-system, Arial, sans-serif;
-    background: linear-gradient(180deg,#eef2ff 0%, #f9fbff 100%);
-    color:#222;
-    padding:28px;
-    display:flex;
-    justify-content:center;
-    min-height:100vh;
-  }
-  .wrap{
-    width:100%;
-    max-width:880px;
-  }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Başakşehir İngilizce Kursu | Seviye Tamamlama Garantisi</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-  /* Header */
-  header{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:12px;
-    margin-bottom:18px;
-    flex-wrap:wrap;
-  }
-  .title{
-    display:flex;
-    gap:12px;
-    align-items:center;
-  }
-  .avatar{
-    width:72px;height:72px;border-radius:16px;
-    background:linear-gradient(135deg,var(--accent),var(--accent-2));
-    display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:24px;
-    box-shadow:0 6px 18px rgba(59,100,255,0.18);
-    border:3px solid white;
-  }
-  h1{margin:0;font-size:24px;color:#1e293b}
-  .greeting{font-size:16px;color:var(--accent);font-weight:600;margin:4px 0}
-  p.lead{margin:0;color:var(--muted);font-size:15px}
+        :root {
+            --primary: #1a237e;
+            --secondary: #00acc1;
+            --accent: #ff5722;
+            --success: #4caf50;
+            --light: #f5f7fa;
+            --shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
 
-  .status{
-    text-align:right;
-    padding:8px 16px;
-    background:white;
-    border-radius:12px;
-    box-shadow:var(--shadow);
-  }
-  .score-display{font-size:18px;font-weight:700;color:var(--accent);display:flex;gap:6px;align-items:center}
-  .progress-wrap{background:#e9eefc;border-radius:999px;height:12px;overflow:hidden;margin-top:8px;width:180px}
-  .progress-bar{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2));width:0%;transition:width 0.3s ease}
-  
-  /* Main card */
-  .card{
-    background:var(--card);
-    border-radius:var(--radius);
-    padding:28px;
-    box-shadow:var(--shadow);
-    margin-bottom:20px;
-    transition:box-shadow 0.3s ease, transform 0.3s ease;
-  }
-  .card:hover{box-shadow:var(--shadow-hover);transform:translateY(-2px)}
+        body {
+            line-height: 1.6;
+            color: #333;
+        }
 
-  .meta{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:10px;
-    margin-bottom:16px;
-  }
-  .difficulty{
-    font-size:13px;color:white;background:var(--accent);padding:6px 14px;border-radius:999px;font-weight:600;
-  }
-  .topic{font-size:13px;color:var(--muted);background:var(--accent-light);padding:6px 12px;border-radius:999px;}
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
 
-  /* Question content */
-  .question-text{
-    font-size:24px;margin:10px 0 20px;
-    line-height:1.4;
-  }
-  .hint{
-    font-size:14px;color:var(--muted);
-    margin:12px 0;padding:12px;background:var(--accent-light);
-    border-radius:10px;border-left:4px solid var(--accent);
-    display:none;
-  }
-  .hint.visible{display:block;}
-  
-  /* Options */
-  .options{
-    display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
-    gap:12px;
-    margin:20px 0;
-  }
-  button.opt{
-    padding:16px;border-radius:12px;border:2px solid #e8eefc;
-    background:white;cursor:pointer;font-size:16px;font-weight:500;
-    transition:all 0.2s ease;text-align:left;
-    box-shadow:0 2px 4px rgba(0,0,0,0.02);
-  }
-  button.opt:hover{
-    border-color:var(--accent);
-    background:#f8faff;
-    transform:translateY(-2px);
-    box-shadow:0 4px 8px rgba(59,100,255,0.08);
-  }
-  button.opt.selected{
-    border-color:var(--accent);
-    background:linear-gradient(180deg,#f0f5ff,#e6eeff);
-    color:var(--accent);
-    box-shadow:0 4px 12px rgba(59,100,255,0.12);
-  }
-  
-  /* Controls */
-  .controls{
-    display:flex;
-    gap:12px;
-    align-items:center;
-    justify-content:flex-end;
-    margin-top:24px;
-  }
-  .btn{
-    border:0;padding:12px 20px;border-radius:10px;background:var(--accent);
-    color:white;cursor:pointer;font-weight:600;font-size:15px;
-    transition:all 0.2s ease;display:flex;align-items:center;gap:6px;
-    box-shadow:0 4px 8px rgba(59,100,255,0.15);
-  }
-  .btn:hover{
-    background:var(--accent-2);
-    transform:translateY(-2px);
-    box-shadow:0 6px 12px rgba(59,100,255,0.2);
-  }
-  .btn.secondary{
-    background:white;color:var(--accent);border:2px solid #dfe9ff;
-    box-shadow:0 2px 4px rgba(0,0,0,0.05);
-  }
-  .btn.secondary:hover{
-    background:#f8faff;
-    border-color:var(--accent);
-  }
-  
-  /* Feedback */
-  .feedback{
-    margin-top:16px;
-    font-size:16px;
-    padding:16px;
-    border-radius:10px;
-    animation:fadeIn 0.5s ease;
-  }
-  @keyframes fadeIn{
-    from{opacity:0; transform:translateY(10px)}
-    to{opacity:1; transform:translateY(0)}
-  }
-  .feedback.good{background:#f0fdf4;color:var(--good);border-left:4px solid var(--good)}
-  .feedback.bad{background:#fef2f2;color:var(--bad);border-left:4px solid var(--bad)}
-  .feedback.warning{background:#fffbeb;color:var(--warning);border-left:4px solid var(--warning)}
-  
-  /* Special question types */
-  .input-answer{
-    width:100%;padding:16px;border-radius:12px;border:2px solid #e8eefc;
-    font-size:16px;margin:12px 0;transition:border-color 0.2s;
-  }
-  .input-answer:focus{
-    outline:none;border-color:var(--accent);
-    box-shadow:0 0 0 3px rgba(59,100,255,0.1);
-  }
-  
-  .match-grid{display:flex;gap:24px;flex-wrap:wrap;margin:20px 0}
-  .match-col{flex:1;min-width:220px;padding:16px;border-radius:12px;background:#fbfdff;border:2px dashed #e6eefc}
-  .draggable{
-    padding:12px 16px;border-radius:10px;background:white;margin:10px 0;
-    border:2px solid #e8eefc;cursor:grab;font-weight:500;
-    transition:all 0.2s ease;
-  }
-  .draggable:hover{background:#f8faff;border-color:var(--accent);transform:translateY(-2px)}
-  .drop-target{
-    min-height:52px;border-radius:10px;padding:12px;background:#eef4ff;
-    border:2px dashed #c7d2fe;margin:10px 0;transition:all 0.2s;
-  }
-  .drop-target.active{
-    border-color:rgba(59,100,255,0.5);
-    background:#f0f4ff;
-    box-shadow:0 0 0 3px rgba(59,100,255,0.05);
-  }
-  
-  .scramble-area{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0}
-  .word-chip{
-    padding:12px 18px;border-radius:999px;background:var(--accent-light);
-    cursor:pointer;font-weight:500;transition:all 0.2s;border:2px solid transparent;
-  }
-  .word-chip:hover{
-    background:white;border-color:var(--accent);
-    transform:translateY(-2px);
-    box-shadow:0 4px 8px rgba(59,100,255,0.1);
-  }
-  
-  /* Review section */
-  .review-list{margin-top:20px}
-  .review-item{
-    padding:16px;border-radius:12px;background:#fbfdff;margin-bottom:12px;
-    border-left:4px solid #e8eefc;transition:all 0.2s;
-  }
-  .review-item.correct{border-left-color:var(--good)}
-  .review-item.incorrect{border-left-color:var(--bad)}
-  
-  /* Footer */
-  footer{
-    display:flex;justify-content:space-between;align-items:center;
-    gap:10px;margin-top:20px;padding:16px;background:white;
-    border-radius:12px;box-shadow:var(--shadow);
-  }
-  .badge{
-    font-weight:700;color:var(--accent);padding:8px 16px;
-    background:var(--accent-light);border-radius:999px;
-    display:flex;align-items:center;gap:6px;
-  }
-  .encouragement{font-size:14px;color:var(--muted);font-style:italic}
-  
-  /* Mobile */
-  @media (max-width:768px){
-    body{padding:16px}
-    .wrap{max-width:100%}
-    header{flex-direction:column;align-items:flex-start;gap:16px}
-    .status{width:100%}
-    .options{grid-template-columns:1fr}
-    .match-grid{flex-direction:column}
-    .question-text{font-size:20px}
-    .controls{flex-wrap:wrap;justify-content:center}
-  }
-</style>
+        /* Header */
+        header {
+            background-color: white;
+            box-shadow: var(--shadow);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-left: 30px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--primary);
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            font-size: 1.5rem;
+            background: none;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+        }
+
+        /* Hero */
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, #283593 100%);
+            color: white;
+            padding: 180px 0 100px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 span {
+            color: #ffcc00;
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            color: #bbdefb;
+        }
+
+        .price-badge {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            font-size: 2rem;
+            font-weight: 700;
+            padding: 15px 40px;
+            border-radius: 50px;
+            margin: 20px 0;
+            box-shadow: 0 6px 20px rgba(255, 87, 34, 0.4);
+        }
+
+        .price-note {
+            font-size: 1.1rem;
+            color: #bbdefb;
+            margin-bottom: 30px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background-color: var(--secondary);
+            color: white;
+            padding: 15px 35px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.2rem;
+            transition: transform 0.3s, background-color 0.3s;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            background-color: #00838f;
+        }
+
+        .whatsapp-button {
+            background-color: #25D366;
+        }
+
+        .whatsapp-button:hover {
+            background-color: #128C7E;
+        }
+
+        /* Guarantee Banner */
+        .guarantee-banner {
+            background: linear-gradient(135deg, var(--success) 0%, #388e3c 100%);
+            color: white;
+            padding: 30px 0;
+            text-align: center;
+        }
+
+        .guarantee-banner h2 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        /* Features */
+        .features {
+            padding: 100px 0;
+            background-color: var(--light);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 50px;
+            color: var(--primary);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--secondary);
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        /* How It Works */
+        .how-it-works {
+            padding: 100px 0;
+        }
+
+        .steps {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .step {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 40px;
+        }
+
+        .step-number {
+            background: var(--primary);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+
+        .step-content h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        /* Schedule */
+        .schedule {
+            padding: 100px 0;
+            background-color: var(--light);
+        }
+
+        .schedule-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .schedule-card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+
+        .schedule-card h3 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            text-align: center;
+        }
+
+        .time-slot {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .time-slot:last-child {
+            border-bottom: none;
+        }
+
+        /* Pricing */
+        .pricing {
+            padding: 100px 0;
+            text-align: center;
+        }
+
+        .pricing-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            max-width: 500px;
+            margin: 0 auto;
+            border: 3px solid var(--secondary);
+        }
+
+        .pricing-header {
+            background-color: var(--primary);
+            color: white;
+            padding: 40px 30px;
+        }
+
+        .pricing-title {
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        .pricing-price {
+            font-size: 3.5rem;
+            font-weight: 700;
+        }
+
+        .pricing-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-top: 10px;
+        }
+
+        .pricing-body {
+            padding: 40px;
+        }
+
+        .pricing-features {
+            list-style: none;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        .pricing-features li {
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+        }
+
+        .pricing-features li:last-child {
+            border-bottom: none;
+        }
+
+        .pricing-features li i {
+            color: var(--success);
+            margin-right: 15px;
+            font-size: 1.2rem;
+        }
+
+        /* Limited Seats */
+        .limited-seats {
+            background: linear-gradient(135deg, #ff5722 0%, #ff7043 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 30px auto;
+            max-width: 600px;
+        }
+
+        .limited-seats h3 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .counter {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            color: var(--accent);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 0 10px;
+        }
+
+        /* Contact */
+        .contact {
+            padding: 100px 0;
+            background-color: var(--light);
+            text-align: center;
+        }
+
+        .contact-methods {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .contact-method {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            width: 200px;
+            transition: transform 0.3s;
+        }
+
+        .contact-method:hover {
+            transform: translateY(-5px);
+        }
+
+        .contact-method i {
+            font-size: 2.5rem;
+            color: var(--secondary);
+            margin-bottom: 15px;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--primary);
+            color: white;
+            padding: 60px 0 30px;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 40px;
+        }
+
+        .footer-section {
+            flex: 1;
+            min-width: 250px;
+            margin-bottom: 30px;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            color: #bbdefb;
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: #bbdefb;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-container {
+                padding: 12px 0;
+            }
+
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background-color: white;
+                flex-direction: column;
+                box-shadow: var(--shadow);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .nav-links li {
+                margin: 0;
+                text-align: center;
+                border-bottom: 1px solid #eee;
+            }
+
+            .nav-links a {
+                display: block;
+                padding: 15px;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .hero {
+                padding: 150px 0 80px;
+            }
+
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.3rem;
+            }
+
+            .price-badge {
+                font-size: 1.8rem;
+                padding: 12px 30px;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="wrap">
+    <!-- Header -->
     <header>
-      <div class="title">
-        <div class="avatar" aria-hidden="true">MA</div>
-        <div>
-          <h1>Hello Alp! 👋</h1>
-          <div class="greeting">Ready for English practice?</div>
-          <p class="lead">A1 Level - Turkish to English Quiz</p>
+        <div class="container header-container">
+            <div class="logo">Fluent<span>Edge</span></div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="nav-links" id="navMenu">
+                <li><a href="#home">Ana Sayfa</a></li>
+                <li><a href="#how">Nasıl Çalışır</a></li>
+                <li><a href="#schedule">Program</a></li>
+                <li><a href="#pricing">Fiyat</a></li>
+                <li><a href="#contact">İletişim</a></li>
+            </ul>
         </div>
-      </div>
-      <div class="status">
-        <div class="score-display">Score: <span id="score">0</span> / <span id="total">20</span></div>
-        <div class="progress-wrap" aria-hidden="true">
-          <div class="progress-bar" id="progressBar"></div>
-        </div>
-      </div>
     </header>
 
-    <main class="card" id="card">
-      <div class="meta">
-        <div>
-          <span class="difficulty" id="difficulty">Easy</span>
-          <span class="topic" id="topic">Greetings</span>
+    <!-- Hero -->
+    <section class="hero" id="home">
+        <div class="container">
+            <h1>İngilizce Seviyesini <span>TAMAMLAMA GARANTİSİ</span></h1>
+            <p class="hero-subtitle">Öğrenene kadar öğretiyoruz. Saat sınırı yok, süre sınırı yok.</p>
+            
+            <div class="price-badge">SADECE 7.000 TL</div>
+            
+            <p class="price-note">Tüm seviyeleri için tek ödeme. Öğrenene kadar ders, ek ücret yok.</p>
+            
+            <div class="cta-buttons">
+                <a href="#contact" class="cta-button">Hemen Yer Ayırt</a>
+                <a href="https://wa.me/905389399217" target="_blank" class="cta-button whatsapp-button">
+                    <i class="fab fa-whatsapp"></i> WhatsApp'tan Sor
+                </a>
+            </div>
         </div>
-        <div class="small" id="qtype">Multiple choice</div>
-      </div>
+    </section>
 
-      <div id="content">
-        <!-- dynamic content -->
-      </div>
+    <!-- Guarantee Banner -->
+    <section class="guarantee-banner">
+        <div class="container">
+            <h2>📚 ÖĞRENENE KADAR ÖĞRETİYORUZ</h2>
+            <p>Eğitim sürecimiz saat bazlı değil, seviye bazlıdır. Öğrenci seviyesini tam anlamıyla öğrenene kadar dersler devam eder.</p>
+        </div>
+    </section>
 
-      <div class="controls">
-        <button class="btn secondary" id="hintBtn">
-          <span>💡</span> Hint
-        </button>
-        <button class="btn" id="checkBtn">
-          <span>✓</span> Check Answer
-        </button>
-        <button class="btn" id="nextBtn" style="display:none">
-          <span>→</span> Next
-        </button>
-      </div>
+    <!-- Features -->
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">Neden Farklıyız?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-award"></i></div>
+                    <h3>Seviye Tamamlama Garantisi</h3>
+                    <p>Öğrenci seviyesini tam olarak öğrenene kadar derslere devam eder. Saat sınırı yok.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-users"></i></div>
+                    <h3>Küçük Sınıf</h3>
+                    <p>Maksimum 10 öğrenci. Herkese bireysel ilgi, her derste konuşma fırsatı.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
+                    <h3>Yoğun ve Etkili</h3>
+                    <p>Günlük derslerle hızlı ilerleme. Dil öğrenimi için en etkili sıklık.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-map-marker-alt"></i></div>
+                    <h3>Mahallenizde</h3>
+                    <p>Başakşehir Millet Bahçesi’nde. Evinize, okulunuza yürüme mesafesi.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-graduation-cap"></i></div>
+                    <h3>Deneyimli Öğretmen</h3>
+                    <p>İki dilde uzman, İngilizce öğretiminde tecrübeli öğretmen.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-comments"></i></div>
+                    <h3>Konuşma Odaklı</h3>
+                    <p>Gramere boğulmadan, gerçek konuşma becerisi kazandırıyoruz.</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-      <div id="feedbackWrap"></div>
-    </main>
+    <!-- How It Works -->
+    <section class="how-it-works" id="how">
+        <div class="container">
+            <h2 class="section-title">Nasıl Çalışır?</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Ücretsiz Seviye Testi</h3>
+                        <p>Sınıfımıza gelip ücretsiz seviye testi yapıyoruz. Mevcut İngilizcenizi ölçüyoruz.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Seviye Programı</h3>
+                        <p>Yeni seviyeye ulaşmak için kişiselleştirilmiş program hazırlıyoruz.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Yoğun Eğitime Başla</h3>
+                        <p>Günlük derslerle yoğun eğitime başlıyoruz. Öğrenme hızınıza göre ilerliyoruz.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3>Seviyeni Tamamla</h3>
+                        <p>Seviyeni tam olarak öğrenene kadar derslere devam ediyoruz. Süre sınırı yok!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    <div class="card" id="reviewCard" style="display:none">
-      <h3>🎉 Great Job Alp! Results</h3>
-      <p class="lead">Here's how you did:</p>
-      <div id="reviewList" class="review-list"></div>
-      <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:20px">
-        <button class="btn secondary" id="restartBtn">🔄 Restart</button>
-        <button class="btn" id="finishBtn">🏁 Finish</button>
-      </div>
-    </div>
+    <!-- Schedule -->
+    <section class="schedule" id="schedule">
+        <div class="container">
+            <h2 class="section-title">Ders Programı</h2>
+            <div class="schedule-grid">
+                <div class="schedule-card">
+                    <h3>Hafta İçi Programı</h3>
+                    <div class="time-slot">
+                        <span>Pazartesi</span>
+                        <span>18:00 - 20:00</span>
+                    </div>
+                    <div class="time-slot">
+                        <span>Salı</span>
+                        <span>18:00 - 20:00</span>
+                    </div>
+                    <div class="time-slot">
+                        <span>Perşembe</span>
+                        <span>18:00 - 20:00</span>
+                    </div>
+                    <div class="time-slot">
+                        <span>Cuma</span>
+                        <span>18:00 - 20:00</span>
+                    </div>
+                    <p style="margin-top: 20px; font-weight: bold; color: var(--primary);">Hafta içi toplam: 8 saat</p>
+                </div>
+                <div class="schedule-card">
+                    <h3>Hafta Sonu Programı</h3>
+                    <div class="time-slot">
+                        <span>Cumartesi</span>
+                        <span>12:00 - 15:00</span>
+                    </div>
+                    <p style="margin-top: 40px; font-style: italic;">* Hafta sonu 4'er saatlik blok dersler</p>
+                    <p style="margin-top: 20px; font-weight: bold; color: var(--primary);">Hafta sonu toplam: 4 saat</p>
+                </div>
+            </div>
+            <p style="text-align: center; margin-top: 30px; font-size: 1.2rem; color: var(--primary); font-weight: bold;">
+                📊 Haftalık toplam: <span style="color: var(--accent);">12 saat</span> yoğun İngilizce eğitimi
+            </p>
+        </div>
+    </section>
 
+    <!-- Pricing -->
+    <section class="pricing" id="pricing">
+        <div class="container">
+            <h2 class="section-title">Tek Seferlik Yatırım</h2>
+            
+            <div class="pricing-card">
+                <div class="pricing-header">
+                    <h3 class="pricing-title">İngilizce Seviyesi</h3>
+                    <div class="pricing-price">7.000 TL</div>
+                    <p class="pricing-subtitle">Öğrenene kadar öğretim garantisi</p>
+                </div>
+                <div class="pricing-body">
+                    <ul class="pricing-features">
+                        <li><i class="fas fa-check-circle"></i> <strong> seviyesini tamamlama garantisi</strong></li>
+                        <li><i class="fas fa-check-circle"></i> Saat sınırı yok, süre sınırı yok</li>
+                        <li><i class="fas fa-check-circle"></i> Günlük yoğun ders programı</li>
+                        <li><i class="fas fa-check-circle"></i> Maksimum 10 kişilik sınıf</li>
+                        <li><i class="fas fa-check-circle"></i> Tüm gramer ve kelime bilgisi</li>
+                        <li><i class="fas fa-check-circle"></i> Konuşma, dinleme, okuma, yazma</li>
+                        <li><i class="fas fa-check-circle"></i> Seviye bitirme sertifikası</li>
+                        <li><i class="fas fa-check-circle"></i> Ücretsiz seviye tespit sınavı</li>
+                    </ul>
+                    
+                    <div class="limited-seats">
+                        <h3>⚠️ SINIRLI KONTENJAN</h3>
+                        <p>Sadece <span class="counter">5</span> öğrenci alıyoruz!</p>
+                        <p style="margin-top: 10px; font-size: 0.9rem;">Erken kayıt yaptıranlar yer garantisi alır.</p>
+                    </div>
+                    
+                    <a href="#contact" class="cta-button" style="background-color: var(--accent);">
+                        <i class="fas fa-lock"></i> YERİMİ ŞİMDİ AYIRT
+                    </a>
+                </div>
+            </div>
+            
+            <p style="margin-top: 30px; color: #666; max-width: 800px; margin-left: auto; margin-right: auto;">
+                <strong>Not:</strong> Bu fiyat tüm seviyeleri için geçerlidir. Öğrenci seviyesini tam olarak öğrenene kadar derslere devam eder. 
+                Ekstra saatler, ekstra haftalar için ek ücret alınmaz. Öğrenme garantisi veriyoruz.
+            </p>
+        </div>
+    </section>
+
+    <!-- Contact -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <h2 class="section-title">Hemen İletişime Geçin</h2>
+            <p style="font-size: 1.2rem; margin-bottom: 20px; color: #555;">
+                Sadece 10 kontenjan var. Erken kayıt yaptıran öğrenciler yer garantisi alacak.
+            </p>
+            
+            <div class="contact-methods">
+                <div class="contact-method">
+                    <i class="fab fa-whatsapp"></i>
+                    <h3>WhatsApp</h3>
+                    <p>Hemen yazın</p>
+                    <a href="https://wa.me/905389399217" target="_blank" style="color: var(--primary); font-weight: bold; display: block; margin-top: 10px;">Tıkla →</a>
+                </div>
+                <div class="contact-method">
+                    <i class="fas fa-phone"></i>
+                    <h3>Telefon</h3>
+                    <p>Arayın sorun</p>
+                    <p style="color: var(--primary); font-weight: bold; margin-top: 10px;">0 (538) 939 92 17</p>
+                </div>
+                <div class="contact-method">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <h3>Adres</h3>
+                    <p>Sınıfımıza gelin</p>
+                    <p style="color: var(--primary); font-weight: bold; margin-top: 10px;">Başakşehir, Miletbahçesi</p>
+                </div>
+            </div>   
+        </div>
+    </section>
+
+    <!-- Footer -->
     <footer>
-      <div class="encouragement" id="encouragement">Say the answers out loud!</div>
-      <div class="badge">Badge: <span id="badge">Starter ⭐</span></div>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Başakşehir English</h3>
+                    <p>Öğrenene kadar öğretiyoruz. Saat saymıyoruz, sonuç alıyoruz.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Hızlı Erişim</h3>
+                    <p><a href="#home" style="color: #bbdefb; text-decoration: none;">Ana Sayfa</a></p>
+                    <p><a href="#schedule" style="color: #bbdefb; text-decoration: none;">Program</a></p>
+                    <p><a href="#pricing" style="color: #bbdefb; text-decoration: none;">Fiyat</a></p>
+                </div>
+                <div class="footer-section">
+                    <h3>İletişim</h3>
+                    <p><i class="fas fa-map-marker-alt"></i> Milletbahçe Mah., Başakşehir</p>
+                    <p><i class="fas fa-phone"></i> 0 (538) 939 92 17</p>
+                    <p><i class="fab fa-whatsapp"></i> WhatsApp: Aynı numara</p>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2026 Başakşehir English. Tüm hakları saklıdır. | Öğrenme Garantisi</p>
+            </div>
+        </div>
     </footer>
-  </div>
 
-<script>
-const quiz = [
-  // 1: Verb to be – full sentence
-  {
-    id:1, type:"mcq", diff:"Easy", topic:"Introductions",
-    q:"I ___ from Turkey.",
-    options:["am","is","are","be"],
-    answer:"am",
-    hint:"Use 'am' with I",
-    explain:"Correct: I am from Turkey."
-  },
-
-  // 2: Food + sentence meaning
-  {
-    id:2, type:"mcq", diff:"Easy", topic:"Food Vocabulary",
-    q:"Which sentence is correct for 🍎?",
-    options:[
-      "It is an apple.",
-      "It are an apple.",
-      "It am apple.",
-      "It be apple."
-    ],
-    answer:"It is an apple.",
-    hint:"Use 'is' with it",
-    explain:"Correct sentence: It is an apple."
-  },
-
-  // 3: Verb to be – negative
-  {
-    id:3, type:"input", diff:"Easy", topic:"Verb to be",
-    q:"Fill the blank: She ___ not happy today.",
-    answer:"is",
-    hint:"is mi are mi?",
-    explain:"Correct: She is not happy today."
-  },
-
-  // 4: Listening – meaning
-  {
-    id:4, type:"listen", diff:"Easy", topic:"Greetings",
-    q:"Listen and choose the correct meaning:",
-    audioText:"Hello, my name is Alp.",
-    options:[
-      "He says goodbye. (Veda ediyor.)",
-      "He tells his name. (Adını söylüyor.)",
-      "He asks a question. (soru soruyor)",
-      "He talks about his family. (ailesi hakkında konuşuyor.)"
-    ],
-    answer:"He tells his name. (Adını söylüyor.)",
-    hint:"ne hakkında konuşuyor",
-    explain:"The speaker says his name."
-  },
-
-  // 5: True / False – general fact
-  {
-    id:5, type:"tf", diff:"Easy", topic:"Daily life",
-    q:"We eat breakfast in the morning. True or False?",
-    answer:true,
-    hint:"Think about daily routine",
-    explain:"True. Breakfast is in the morning."
-  },
-
-  // 6: Scramble – longer sentence
-  {
-    id:6, type:"scramble", diff:"Medium", topic:"Sentence order",
-    q:"Order the words:",
-    words:["I","like","to","play","football"],
-    answer:"I like to play football",
-    hint:"Start with I",
-    explain:"Correct: I like to play football."
-  },
-
-  // 7: Numbers – simple math
-  {
-    id:7, type:"mcq", diff:"Medium", topic:"Numbers",
-    q:"What is six plus 4?",
-    options:["8","9","10","12"],
-    answer:"10",
-    hint:"Add the numbers",
-    explain:"6 + 4 = 10."
-  },
-
-  // 8: Prepositions – picture logic
-  {
-    id:8, type:"mcq", diff:"Medium", topic:"Prepositions",
-    q:"The book is ___ the table.",
-    options:["in","on","under","behind"],
-    answer:"on",
-    hint:"The book is on top",
-    explain:"Correct: on the table."
-  },
-
-  // 9: Plural with number
-  {
-    id:9, type:"input", diff:"Medium", topic:"Plurals",
-    q:"There are two ___. (box)",
-    answer:"boxes",
-    hint:"Box → boxes",
-    explain:"Correct: two boxes."
-  },
-
-  // 11: Family – possessive
-  {
-    id:11, type:"mcq", diff:"Medium", topic:"Family",
-    q:"My ___ name is Ali. (father)",
-    options:[
-      "father",
-      "father’s",
-      "fathers",
-      "fathers’"
-    ],
-    answer:"father’s",
-    hint:"Use possessive",
-    explain:"Correct: My father’s name is Ali."
-  },
-
-  // 12: Daily routine – time word
-  {
-    id:12, type:"scramble", diff:"Medium", topic:"Daily routine",
-    q:"Order the words:",
-    words:["I","go","school","to","every","day"],
-    answer:"I go to school every day",
-    hint:"Think of daily routine",
-    explain:"Correct sentence formed."
-  },
-
-  // 13: School – use sentence
-  {
-    id:13, type:"mcq", diff:"Easy", topic:"School",
-    q:"Which one is in a pencil bag?",
-    options:["chair","pencil","desk","board"],
-    answer:"pencil",
-    hint:"You write with it",
-    explain:"A pencil is in a pencil case."
-  },
-
-  // 14: Present simple – negative
-  {
-    id:14, type:"input", diff:"Medium", topic:"Present tense",
-    q:"He ___ like milk.",
-    answer:"doesn't",
-    hint:"doesn't or can't",
-    explain:"Correct: He doesn't like milk."
-  },
-
-  // 16: Weather – sentence choice
-  {
-    id:16, type:"mcq", diff:"Medium", topic:"Weather",
-    q:"It is cold today. What do you wear?",
-    options:["T-shirt","jacket","shorts","sandals"],
-    answer:"jacket",
-    hint:"Cold weather",
-    explain:"We wear a jacket when it is cold."
-  },
-
-  // 17: Time – clock understanding
-  {
-    id:17, type:"mcq", diff:"Medium", topic:"Time",
-    q:"School starts at 8:00. Is it morning or afternoon?",
-    options:["morning","afternoon","evening","night"],
-    answer:"morning",
-    hint:"8:00 is early",
-    explain:"8:00 is in the morning."
-  },
-
-  // 18: Can – negative ability
-  {
-    id:18, type:"input", diff:"Medium", topic:"Can / Ability",
-    q:"Fish ___ fly.",
-    answer:"can't",
-    hint:"can or can't",
-    explain:"Correct: Fish can't fly."
-  },
-
-  // 19: Food – sentence logic
-  {
-    id:19, type:"mcq", diff:"Medium", topic:"Food",
-    q:"We eat soup with a ___.",
-    options:["knife","fork","spoon","plate"],
-    answer:"spoon",
-    hint:"Think about soup",
-    explain:"We eat soup with a spoon."
-  },
-
-  // 20: Question form – verb to be
-  {
-    id:20, type:"scramble", diff:"Challenge", topic:"Questions",
-    q:"Make a question:",
-    words:["Where","you","are","from"],
-    answer:"Where are you from",
-    hint:"Question with 'Where'",
-    explain:"Correct question formed."
-  }
-];
-
-
-/* State Management */
-let current = 0;
-let score = 0;
-const total = quiz.length;
-document.getElementById('total').innerText = total;
-const review = [];
-let encouragementMessages = [
-  "Great effort Alp!",
-  "You're doing amazing!",
-  "Keep going, you can do it!",
-  "Turkish to English - you're getting better!",
-  "Say the answers out loud!",
-  "Think in English!",
-  "Well done so far!",
-  "Almost there Alp!"
-];
-
-/* DOM References */
-const content = document.getElementById('content');
-const diffEl = document.getElementById('difficulty');
-const topicEl = document.getElementById('topic');
-const qtypeEl = document.getElementById('qtype');
-const checkBtn = document.getElementById('checkBtn');
-const nextBtn = document.getElementById('nextBtn');
-const hintBtn = document.getElementById('hintBtn');
-const feedbackWrap = document.getElementById('feedbackWrap');
-const progressBar = document.getElementById('progressBar');
-const scoreEl = document.getElementById('score');
-const reviewCard = document.getElementById('reviewCard');
-const reviewList = document.getElementById('reviewList');
-const restartBtn = document.getElementById('restartBtn');
-const finishBtn = document.getElementById('finishBtn');
-const badgeEl = document.getElementById('badge');
-const encouragementEl = document.getElementById('encouragement');
-
-/* Initialize Quiz */
-renderQuestion();
-updateProgress();
-updateEncouragement();
-
-/* Question Rendering */
-function renderQuestion(){
-  feedbackWrap.innerHTML = "";
-  nextBtn.style.display = "none";
-  checkBtn.style.display = "inline-flex";
-  hintBtn.style.display = "inline-flex";
-  
-  const q = quiz[current];
-  diffEl.innerText = q.diff;
-  topicEl.innerText = q.topic;
-  
-  // Set question type display text
-  const typeText = {
-    "mcq": "Multiple Choice",
-    "input": "Write Answer",
-    "listen": "Listening",
-    "match": "Matching",
-    "tf": "True/False",
-    "scramble": "Word Order"
-  };
-  qtypeEl.innerText = typeText[q.type] || q.type;
-  
-  // Build question UI
-  let html = `<div class="question-text">${escapeHtml(q.q)}</div>`;
-  
-  // Add Turkish translation for harder questions
-  if(q.diff === "Medium" || q.diff === "Challenge"){
-    html += `<div class="small" style="color:var(--muted);margin-bottom:12px">(Turkish: ${getTurkishTranslation(q)})</div>`;
-  }
-  
-  // Add hint (hidden by default)
-  html += `<div class="hint" id="hintText">${escapeHtml(q.hint)}</div>`;
-  
-  // Question type specific UI
-  switch(q.type){
-    case "mcq":
-    case "listen":
-      html += `<div class="options" id="options">`;
-      q.options.forEach(opt => {
-        html += `<button class="opt" data-val="${escapeHtml(opt)}">${escapeHtml(opt)}</button>`;
-      });
-      html += `</div>`;
-      break;
-      
-    case "input":
-      html += `<input id="textAnswer" class="input-answer" placeholder="Type your answer here..." autocomplete="off">`;
-      break;
-      
-    case "match":
-      html += `<div class="match-grid">`;
-      html += `<div class="match-col"><strong>Words/Images</strong>`;
-      q.pairs.forEach(p => {
-        html += `<div class="draggable" draggable="true" data-key="${escapeHtml(p.left)}">${escapeHtml(p.left)}</div>`;
-      });
-      html += `</div>`;
-      html += `<div class="match-col"><strong>Match Here</strong>`;
-      q.pairs.forEach(p => {
-        html += `<div class="drop-target" data-key="${escapeHtml(p.right)}">${escapeHtml(p.right)}</div>`;
-      });
-      html += `</div>`;
-      html += `</div>`;
-      break;
-      
-    case "tf":
-      html += `<div class="options">`;
-      html += `<button class="opt" data-val="true">✅ True</button>`;
-      html += `<button class="opt" data-val="false">❌ False</button>`;
-      html += `</div>`;
-      break;
-      
-    case "scramble":
-      html += `<div id="answerArea" style="min-height:60px;padding:16px;margin:16px 0;border-radius:12px;background:var(--accent-light);border:2px dashed #c7d2fe"></div>`;
-      html += `<div class="scramble-area" id="scrambleArea">`;
-      // Shuffle words for scrambling
-      const shuffledWords = [...q.words].sort(() => Math.random() - 0.5);
-      shuffledWords.forEach(w => {
-        html += `<div class="word-chip" data-word="${escapeHtml(w)}">${escapeHtml(w)}</div>`;
-      });
-      html += `</div>`;
-      html += `<div style="margin-top:16px">
-        <button id="clearScramble" class="btn secondary">🗑️ Clear</button>
-      </div>`;
-      break;
-  }
-  
-  // Add listening play button
-  if(q.type === "listen"){
-    html = `<div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
-      <button id="playBtn" class="btn secondary" style="padding:12px 24px">
-        🔊 Play Sentence
-      </button>
-      <div class="small">Listen carefully and choose</div>
-    </div>` + html;
-  }
-  
-  content.innerHTML = html;
-  
-  // Setup event handlers
-  setupEventHandlers(q);
-}
-
-/* Event Handlers Setup */
-function setupEventHandlers(q){
-  // Multiple choice, listening, true/false
-  if(["mcq", "listen", "tf"].includes(q.type)){
-    const opts = document.querySelectorAll('.opt');
-    opts.forEach(btn => {
-      btn.addEventListener('click', () => {
-        opts.forEach(b => b.classList.remove('selected'));
-        btn.classList.add('selected');
-      });
-    });
-  }
-  
-  // Input field - Enter key support
-  if(q.type === "input"){
-    const input = document.getElementById('textAnswer');
-    input.focus();
-    input.addEventListener('keydown', (e) => {
-      if(e.key === 'Enter') checkAnswer();
-    });
-  }
-  
-  // Drag and drop matching
-  if(q.type === "match"){
-    const drags = document.querySelectorAll('.draggable');
-    const drops = document.querySelectorAll('.drop-target');
-    
-    drags.forEach(d => {
-      d.addEventListener('dragstart', (ev) => {
-        ev.dataTransfer.setData('text/plain', d.getAttribute('data-key'));
-        d.style.opacity = '0.4';
-      });
-      d.addEventListener('dragend', () => {
-        drags.forEach(drag => drag.style.opacity = '1');
-      });
-    });
-    
-    drops.forEach(t => {
-      t.addEventListener('dragover', (ev) => {
-        ev.preventDefault();
-        t.classList.add('active');
-      });
-      t.addEventListener('dragleave', () => {
-        t.classList.remove('active');
-      });
-      t.addEventListener('drop', (ev) => {
-        ev.preventDefault();
-        t.classList.remove('active');
-        const key = ev.dataTransfer.getData('text/plain');
-        t.innerHTML = `<strong>${escapeHtml(key)}</strong><br>
-          <small style="color:var(--muted)">${escapeHtml(t.getAttribute('data-key'))}</small>`;
-        t.setAttribute('data-answer', key);
-      });
-    });
-  }
-  
-  // Word scramble
-  if(q.type === "scramble"){
-    const chips = document.querySelectorAll('.word-chip');
-    const answerArea = document.getElementById('answerArea');
-    const clearBtn = document.getElementById('clearScramble');
-    let selectedWords = [];
-    
-    chips.forEach(c => {
-      c.addEventListener('click', () => {
-        selectedWords.push(c.getAttribute('data-word'));
-        updateScrambleArea();
-      });
-    });
-    
-    clearBtn.addEventListener('click', () => {
-      selectedWords = [];
-      updateScrambleArea();
-    });
-    
-    function updateScrambleArea(){
-      answerArea.innerHTML = selectedWords.map(w => 
-        `<span style="display:inline-block;margin:4px;padding:8px 12px;background:white;border-radius:8px;border:2px solid #e8eefc;font-weight:500">${escapeHtml(w)}</span>`
-      ).join(' ');
-      answerArea.setAttribute('data-value', selectedWords.join(' '));
-    }
-  }
-  
-  // Listening TTS
-  if(q.type === "listen"){
-    const playBtn = document.getElementById('playBtn');
-    playBtn.addEventListener('click', () => {
-      const msg = new SpeechSynthesisUtterance(q.audioText);
-      msg.lang = 'en-US';
-      msg.rate = 0.9;
-      msg.pitch = 1;
-      speechSynthesis.cancel();
-      speechSynthesis.speak(msg);
-    });
-  }
-  
-  // Hint button
-  hintBtn.onclick = () => {
-    const hintText = document.getElementById('hintText');
-    if(hintText){
-      hintText.classList.toggle('visible');
-      hintBtn.innerHTML = hintText.classList.contains('visible') ? 
-        '<span>👁️</span> Hide Hint' : '<span>💡</span> Hint';
-    }
-  };
-}
-
-/* Check Answer Function */
-function checkAnswer(){
-  const q = quiz[current];
-  let studentAns = null;
-  let correct = false;
-  
-  switch(q.type){
-    case "mcq":
-    case "listen":
-    case "tf":
-      const sel = document.querySelector('.opt.selected');
-      if(!sel){
-        showFeedback("Please choose an option first.", "warning");
-        return;
-      }
-      studentAns = sel.getAttribute('data-val');
-      if(q.type === "tf"){
-        studentAns = studentAns === 'true';
-        correct = studentAns === q.answer;
-      } else {
-        correct = String(studentAns).toLowerCase().trim() === String(q.answer).toLowerCase().trim();
-      }
-      break;
-      
-    case "input":
-      const inputVal = document.getElementById('textAnswer')?.value.trim();
-      if(!inputVal){
-        showFeedback("Please type your answer first.", "warning");
-        return;
-      }
-      studentAns = inputVal;
-      correct = studentAns.toLowerCase() === q.answer.toLowerCase();
-      break;
-      
-    case "match":
-      const drops = document.querySelectorAll('.drop-target');
-      let allMatched = true;
-      Array.from(drops).forEach(d => {
-        if(!d.getAttribute('data-answer')) allMatched = false;
-      });
-      if(!allMatched){
-        showFeedback("Please match all items first.", "warning");
-        return;
-      }
-      studentAns = "Matched pairs";
-      correct = Array.from(drops).every(d => {
-        const answer = d.getAttribute('data-answer');
-        const expected = d.getAttribute('data-key');
-        return q.pairs.some(p => p.left === answer && p.right === expected);
-      });
-      break;
-      
-    case "scramble":
-      const area = document.getElementById('answerArea');
-      const val = area?.getAttribute('data-value') || "";
-      if(!val.trim()){
-        showFeedback("Please arrange the words first.", "warning");
-        return;
-      }
-      studentAns = val.trim();
-      correct = studentAns.toLowerCase() === q.answer.toLowerCase();
-      break;
-  }
-  
-  // Record result
-  review.push({
-    qIdx: current,
-    question: q.q,
-    answer: q.answer,
-    student: studentAns,
-    correct: correct
-  });
-  
-  // Update score
-  if(correct){
-    score++;
-    scoreEl.innerText = score;
-    const goodMessages = [
-      "Excellent! 🎉",
-      "Perfect! ✅",
-      "Well done! 👍",
-      "Great job! 👏",
-      "Correct! 💫"
-    ];
-    const randomMsg = goodMessages[Math.floor(Math.random() * goodMessages.length)];
-    showFeedback(`${randomMsg} ${q.explain}`, "good");
-  } else {
-    showFeedback(`Almost! The correct answer is: <strong>${q.answer}</strong>. ${q.explain}`, "bad");
-  }
-  
-  // Show next button
-  checkBtn.style.display = "none";
-  nextBtn.style.display = "inline-flex";
-  hintBtn.style.display = "none";
-  
-  // Setup next button
-  nextBtn.onclick = () => {
-    current++;
-    if(current < total){
-      renderQuestion();
-      updateProgress
-            updateProgress();
-      updateEncouragement();
-    } else {
-      finishQuiz();
-    }
-  };
-}
-
-/* Show Feedback */
-function showFeedback(msg, kind){
-  feedbackWrap.innerHTML = `<div class="feedback ${kind}">${msg}</div>`;
-}
-
-/* Update Progress */
-function updateProgress(){
-  const pct = Math.round((current/total)*100);
-  progressBar.style.width = pct + '%';
-  updateBadge();
-}
-
-/* Update Encouragement Message */
-function updateEncouragement(){
-  const randomIndex = Math.floor(Math.random() * encouragementMessages.length);
-  encouragementEl.textContent = encouragementMessages[randomIndex];
-}
-
-/* Update Badge */
-function updateBadge(){
-  const ratio = score / total;
-  let badge = "";
-  
-  if(current === 0){
-    badge = "Starter ⭐";
-  } else if(ratio === 1 && current === total){
-    badge = "Perfect! 🏆";
-  } else if(ratio >= 0.9){
-    badge = "Expert 🥇";
-  } else if(ratio >= 0.7){
-    badge = "Great! 🥈";
-  } else if(ratio >= 0.5){
-    badge = "Good! 🥉";
-  } else if(ratio >= 0.3){
-    badge = "Keep Going! ✨";
-  } else {
-    badge = "Learning 🌱";
-  }
-  
-  badgeEl.innerHTML = `Badge: <span>${badge}</span>`;
-}
-
-/* Finish Quiz */
-function finishQuiz(){
-  // Hide main card controls
-  document.querySelector('.controls').style.display = 'none';
-  
-  // Show final message
-  content.innerHTML = `
-    <div style="text-align:center; padding:40px 20px">
-      <div style="font-size:48px; margin-bottom:20px">🎉</div>
-      <h2 style="margin-bottom:16px">Great Job ${STUDENT}!</h2>
-      <div style="font-size:24px; color:var(--accent); margin-bottom:24px">
-        Final Score: <strong>${score} / ${total}</strong>
-      </div>
-      <div style="background:var(--accent-light); padding:20px; border-radius:12px; margin-bottom:24px">
-        <div style="font-size:18px; margin-bottom:8px">Your Progress:</div>
-        <div style="font-size:14px; color:var(--muted)">
-          ${score >= total*0.8 ? "Excellent! You're ready for A2!" : 
-            score >= total*0.6 ? "Good work! Keep practicing!" : 
-            "Keep learning, you're improving!"}
-        </div>
-      </div>
-    </div>
-  `;
-  
-  // Show review card
-  reviewCard.style.display = "block";
-  
-  // Fill review list
-  reviewList.innerHTML = "";
-  review.forEach((r, idx) => {
-    const q = quiz[r.qIdx];
-    const isCorrect = r.correct;
-    
-    reviewList.innerHTML += `
-      <div class="review-item ${isCorrect ? 'correct' : 'incorrect'}">
-        <div style="display:flex; justify-content:space-between; margin-bottom:8px">
-          <strong>Question ${idx + 1}:</strong>
-          <span style="color:${isCorrect ? 'var(--good)' : 'var(--bad)'}; font-weight:600">
-            ${isCorrect ? '✓ Correct' : '✗ Incorrect'}
-          </span>
-        </div>
-        <div style="margin-bottom:8px"><strong>Q:</strong> ${escapeHtml(r.question)}</div>
-        <div style="margin-bottom:8px"><strong>Your answer:</strong> ${escapeHtml(String(r.student))}</div>
-        <div style="margin-bottom:8px"><strong>Correct answer:</strong> ${escapeHtml(String(r.answer))}</div>
-        <div style="font-size:13px; color:var(--muted)">
-          <strong>Explanation:</strong> ${escapeHtml(q.explain || '')}
-        </div>
-      </div>
-    `;
-  });
-  
-  updateBadge();
-}
-
-/* Get Turkish Translation */
-function getTurkishTranslation(q){
-  // Simple translations for common questions
-  const translations = {
-    "I ___ a student.": "Ben ___ bir öğrenciyim.",
-    "What is this? 🍎": "Bu nedir? 🍎",
-    "Fill the blank: My brother ___ 10 years old.": "Boşluğu doldur: Erkek kardeşim ___ 10 yaşında.",
-    "The sky is green. True or False?": "Gökyüzü yeşildir. Doğru mu Yanlış mı?",
-    "How many fingers on two hands?": "İki elde kaç parmak var?",
-    "The cat is sleeping ___ the chair.": "Kedi sandalyenin ___ uyuyor.",
-    "Write the plural of 'book':": "'Book' kelimesinin çoğulunu yaz:",
-    "My father's wife is my ___.": "Babamın eşi benim ___.",
-    "We write with a ___.": "Biz bir ___ ile yazarız.",
-    "He ___ (play) football every Saturday.": "O her Cumartesi futbol ___.",
-    "When it rains, we need an ___.": "Yağmur yağdığında, bir ___ lazım.",
-    "We sleep at ___.": "Biz ___ uyuruz.",
-    "Birds ___ fly.": "Kuşlar ___ uçabilir.",
-    "We drink ___ when we are thirsty.": "Susadığımızda ___ içeriz."
-  };
-  
- 
-}
-
-/* Restart Quiz */
-restartBtn.onclick = () => {
-  current = 0;
-  score = 0;
-  review.length = 0;
-  reviewCard.style.display = "none";
-  document.querySelector('.controls').style.display = 'flex';
-  scoreEl.innerText = '0';
-  progressBar.style.width = '0%';
-  renderQuestion();
-  updateProgress();
-  updateEncouragement();
-};
-
-/* Finish Button */
-finishBtn.onclick = () => {
-  reviewCard.style.display = 'none';
-  // Show celebration message
-  feedbackWrap.innerHTML = `
-    <div class="feedback good" style="text-align:center">
-      <div style="font-size:48px">🎓</div>
-      <h3>Quiz Completed!</h3>
-      <p>You scored ${score} out of ${total}</p>
-      <p>Great work Alp! Keep practicing English every day!</p>
-    </div>
-  `;
-};
-
-/* Utility Functions */
-function escapeHtml(s){
-  if(s === null || s === undefined) return '';
-  const div = document.createElement('div');
-  div.textContent = s;
-  return div.innerHTML;
-}
-
-/* Keyboard Shortcuts */
-document.addEventListener('keydown', (e) => {
-  // N for next when available
-  if(e.key.toLowerCase() === 'n' && nextBtn.style.display !== 'none'){
-    nextBtn.click();
-  }
-  // Enter for check answer
-  if(e.key === 'Enter' && checkBtn.style.display !== 'none'){
-    checkAnswer();
-  }
-  // H for hint
-  if(e.key.toLowerCase() === 'h'){
-    hintBtn.click();
-  }
-  // R for restart (when review is visible)
-  if(e.key.toLowerCase() === 'r' && reviewCard.style.display !== 'none'){
-    restartBtn.click();
-  }
-});
-
-/* Initialize Speech Synthesis */
-if('speechSynthesis' in window){
-  speechSynthesis.onvoiceschanged = () => {
-    console.log("Speech synthesis ready");
-  };
-}
-
-/* Add confetti effect for perfect score */
-function celebrate(){
-  if(score === total){
-    // Simple confetti effect
-    const confetti = document.createElement('div');
-    confetti.style.cssText = `
-      position:fixed; top:0; left:0; width:100%; height:100%; 
-      pointer-events:none; z-index:9999;
-    `;
-    document.body.appendChild(confetti);
-    
-    for(let i=0; i<50; i++){
-      const dot = document.createElement('div');
-      dot.style.cssText = `
-        position:absolute; width:10px; height:10px; background:${i%3===0?'#3b64ff':i%3===1?'#6a86ff':'#ff6b6b'};
-        border-radius:50%; top:-20px; left:${Math.random()*100}vw;
-        animation:fall ${1+Math.random()*2}s linear ${Math.random()*0.5}s forwards;
-      `;
-      confetti.appendChild(dot);
-    }
-    
-    // Add CSS animation
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes fall {
-        to { transform: translateY(100vh) rotate(${360*Math.random()}deg); }
-      }
-    `;
-    document.head.appendChild(style);
-    
-    setTimeout(() => {
-      document.body.removeChild(confetti);
-      document.head.removeChild(style);
-    }, 3000);
-  }
-}
-
-/* Wire up check button */
-checkBtn.addEventListener('click', checkAnswer);
-
-/* Add celebration on finish */
-const originalFinishQuiz = finishQuiz;
-finishQuiz = function(){
-  originalFinishQuiz.call(this);
-  setTimeout(celebrate, 500);
-};
-
-/* Add audio feedback */
-function playSound(type){
-  if(type === 'correct'){
-    // Play success sound if available
-    try{
-      const audio = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAA==');
-      audio.volume = 0.3;
-      audio.play().catch(() => {});
-    }catch(e){}
-  }
-}
-
-/* Modify checkAnswer to include sound */
-const originalCheckAnswer = checkAnswer;
-checkAnswer = function(){
-  originalCheckAnswer.call(this);
-  const q = quiz[current];
-  const sel = document.querySelector('.opt.selected');
-  if(sel){
-    if(sel.getAttribute('data-val') === q.answer){
-      playSound('correct');
-    }
-  }
-};
-</script>
+    <script>
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navMenu = document.getElementById('navMenu');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+        
+        // Close mobile menu when clicking on a link
+        const navLinks = document.querySelectorAll('.nav-links a');
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                navMenu.classList.remove('active');
+            });
+        });
+        
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if(targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if(targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+                
+        console.log("Başakşehir English - Öğrenme Garantisi yüklendi!");
+    </script>
 </body>
 </html>
-
